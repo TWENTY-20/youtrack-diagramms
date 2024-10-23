@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/youtrack-app.json",
+  "name": "diagramm-editor",
+  "title": "Diagramm Editor",
+  "description": "Example description",
+  "version": "1.0.0",
+  "icon": "logo.svg",
+  "minYouTrackVersion": "2024.3.0",
+  "widgets": [
+    {
+      "key": "diagramm-option-item",
+      "name": "Edit diagramms",
+      "indexPath": "article-option/index.html",
+      "extensionPoint": "ARTICLE_OPTIONS_MENU_ITEM",
+      "expectedDimensions": {
+        "height": 80,
+        "width": 80
+      },
+      "permissions:": [
+        "READ_ARTICLE",
+        "UPDATE_ARTICLE"
+      ]
+    },
+    {
+      "key": "editor",
+      "name": "Diagramms",
+      "indexPath": "full-page/index.html",
+      "extensionPoint": "MAIN_MENU_ITEM"
+    }
+  ]
+}

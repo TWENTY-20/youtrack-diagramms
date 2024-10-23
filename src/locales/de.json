@@ -1,0 +1,23 @@
+{
+  "filterArticles": "Artikel filtern",
+  "loading": "Laden...",
+  "noArticlesFound": "Keine Artikel gefunden",
+  "filterAttachments": "Anhänge filtern",
+  "noAttachmentsFound": "Keine Anhänge gefunden",
+  "filterProjects": "Projekte filtern",
+  "noProjectsFound": "Keine Projekte gefunden",
+  "diagramms": "Diagramme",
+  "alertSelectAttachment": "Wähle ein Anhang aus",
+  "selectProject": "Wähle ein Projekt",
+  "selectArticle": "Wähle ein Artikel",
+  "selectAttachment": "Wähle ein Anhang",
+  "newDiagramm": "Neues Diagramm",
+  "diagrammName": "Diagramm Name",
+  "cancel": "Abbrechen",
+  "add": "Hinzufügen",
+  "project": "Projekt",
+  "article": "Artikel",
+  "alert_select_items": "Wähle ein Projekt, ein Artikel und einen Diagrammnamen",
+  "alert_diagramm_saved": "Diagramm gespeichert",
+  "open": "Öffnen"
+}

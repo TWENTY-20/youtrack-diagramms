@@ -1,0 +1,21 @@
+{
+  "entityTypeExtensions": [
+    {
+      "entityType": "AppGlobalStorage",
+      "properties": {
+        "articleId": {
+          "type": "string",
+          "multi": false
+        },
+        "attachmentId": {
+          "type": "string",
+          "multi": false
+        },
+        "edited": {
+          "type": "integer",
+          "multi": false
+        }
+      }
+    }
+  ]
+}
