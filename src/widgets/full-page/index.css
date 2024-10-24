@@ -24,3 +24,10 @@ body.plugin {
     top: 40% !important;
     left: calc(50% - 155px) !important;
 }
+.confirmation-popup {
+    max-height: 200px !important;
+}
+
+.drawIo iframe:focus{
+    outline: none !important;
+}

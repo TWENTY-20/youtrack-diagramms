@@ -1,12 +1,10 @@
-
-
 const languages = new Map()
 // import English from "./locales/en.json"
 // languages.set("en", English)
 
 
 // eslint-disable-next-line no-undef
-exports.httpHandler= {
+exports.httpHandler = {
     endpoints: [
         {
             method: 'GET',
@@ -21,9 +19,10 @@ exports.httpHandler= {
             path: 'cacheAttachment',
             handle: (ctx) => {
                 const body = JSON.parse(ctx.request.body)
-                ctx.globalStorage.extensionProperties.articleId = body.articleId
+                ctx.globalStorage.extensionProperties.id = body.id
                 ctx.globalStorage.extensionProperties.attachmentId = body.attachmentId
                 ctx.globalStorage.extensionProperties.edited = body.edited
+                ctx.globalStorage.extensionProperties.forArticle = body.forArticle
                 ctx.response.json({})
             }
 
@@ -33,9 +32,10 @@ exports.httpHandler= {
             path: 'getAttachment',
             handle: (ctx) => {
                 const result = {
-                    articleId: ctx.globalStorage.extensionProperties.articleId,
+                    id: ctx.globalStorage.extensionProperties.id,
                     attachmentId: ctx.globalStorage.extensionProperties.attachmentId,
-                    edited: ctx.globalStorage.extensionProperties.edited
+                    edited: ctx.globalStorage.extensionProperties.edited,
+                    forArticle: ctx.globalStorage.extensionProperties.forArticle
 
                 }
                 ctx.response.json(result)

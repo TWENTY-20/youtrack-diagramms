@@ -70,6 +70,8 @@ export default defineConfig(({ mode }) => {
                     fullPage: resolve(__dirname, 'src/widgets/full-page/index.html'),
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
                     articleOption: resolve(__dirname, 'src/widgets/article-option/index.html'),
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call
+                    issueOption: resolve(__dirname, 'src/widgets/issue-option/index.html'),
                 }
             }
         }

@@ -3,7 +3,7 @@
     {
       "entityType": "AppGlobalStorage",
       "properties": {
-        "articleId": {
+        "id": {
           "type": "string",
           "multi": false
         },
@@ -13,6 +13,10 @@
         },
         "edited": {
           "type": "integer",
+          "multi": false
+        },
+        "forArticle": {
+          "type": "boolean",
           "multi": false
         }
       }

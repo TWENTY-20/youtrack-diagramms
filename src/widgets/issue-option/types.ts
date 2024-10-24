@@ -1,7 +1,7 @@
-import {AlertType} from "@jetbrains/ring-ui-built/components/alert/alert";
-import {AlertItem} from "@jetbrains/ring-ui-built/components/alert-service/alert-service";
-import {RequestParams} from "@jetbrains/ring-ui-built/components/http/http";
-import {ReactNode} from "react";
+import { AlertType } from "@jetbrains/ring-ui-built/components/alert/alert";
+import { AlertItem } from "@jetbrains/ring-ui-built/components/alert-service/alert-service";
+import { RequestParams } from "@jetbrains/ring-ui-built/components/http/http";
+import { ReactNode } from "react";
 
 export interface HttpHandler {
     endpoints: Array<Endpoint>;
@@ -36,7 +36,7 @@ export type Context<scope extends Scope> = {
 export type Request = {
     body: string;
     bodyAsStream: ReadableStream<Uint8Array>;
-    headers: Array<{ name: string, value: string }>;
+    headers: Array<{name: string, value: string}>;
     path: string;
     fullPath: string;
     method: Method;
@@ -57,9 +57,7 @@ export type Response = {
 
 export interface Host {
     alert(message: ReactNode, type?: AlertType, timeout?: number, options?: Partial<AlertItem>): void;
-
     fetchYouTrack(relativeURL: string, requestParams?: RequestParams): Promise<any>;
-
     fetchApp(relativeURL: string, requestParams: RequestParams & { scope?: boolean }): Promise<any>;
 }
 
@@ -70,17 +68,4 @@ export interface APIError {
     },
     message: string,
     status: number
-}
-
-export interface EventData {
-    event: string;
-    data?: string
-}
-
-export interface CacheResponse {
-    id: string,
-    attachmentId: string,
-    edited: number,
-    forArticle: boolean
-
 }

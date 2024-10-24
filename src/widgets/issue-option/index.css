@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body.plugin {
+    padding: 0 16px;
+    background-color: var(--ring-content-background-color);
+    color: var(--ring-text-color);
+    font-size: var(--ring-font-size);
+}
+
+.selectAttachment {
+    width: 100%;
+}
+
+.attachmentItem {
+    padding: 5px;
+    border: 1px solid var(--ring-line-color);
+    border-radius: var(--ring-border-radius);
+}
+
+.attachmentItem:hover {
+    background-color: var(--ring-selected-background-color);
+
+}
