@@ -141,7 +141,7 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                 key={'drawio_embedded'}
                 xml={xml}
                 urlParameters={{
-                    ui: 'dark',
+                    ui: 'kennedy',
                     spin: true,
                     libraries: true,
                     saveAndExit: false
