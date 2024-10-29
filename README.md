@@ -1,7 +1,6 @@
 # YouTrack App Example
 
-Once installed into [JetBrains YouTrack](https://www.jetbrains.com/youtrack/), this App utilizes available extension
-points for sprint planning.
+Once installed into [JetBrains YouTrack](https://www.jetbrains.com/youtrack/), this App provides a Drawio-Editor for editing diagrams.
 
 ### Installation
 
