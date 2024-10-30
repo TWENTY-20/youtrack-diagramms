@@ -86,7 +86,6 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
     function loadArticles(project: Project | null) {
         if (!project) return;
-        if (articles != null) return
         void host.fetchYouTrack(`admin/projects/${project.id}/articles?fields=id,summary,idReadable`).then((articles: Article[]) => {
             setArticles(articles);
         })
@@ -94,7 +93,6 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
     function loadIssues(project: Project | null) {
         if (!project) return;
-        if (issues != null) return
         void host.fetchYouTrack(`admin/projects/${project.id}/issues?fields=id,summary,idReadable`).then((issues: Issue[]) => {
             setIssues(issues)
         })
@@ -252,6 +250,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     if (!item) return
                                     onSelectProject(item.model)
                                 }}
+                                popupClassName={"remove-input-focus"}
                             >
                             </Select>
                             <p className={"px-2 align-middle"} style={{fontSize: '14pt', color: 'var(--ring-secondary-color)'}}>/</p>
@@ -269,6 +268,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                         if (!item) return
                                         onSelectArticle(item.model)
                                     }}
+                                    popupClassName={"remove-input-focus"}
                                 >
                                 </Select>
                                 :
@@ -285,6 +285,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                         if (!item) return
                                         onSelectIssue(item.model)
                                     }}
+                                    popupClassName={"remove-input-focus"}
                                 >
                                 </Select>
                             }
@@ -302,6 +303,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     if (!item) return
                                     onSelectAttachment(item.model)
                                 }}
+                                popupClassName={"remove-input-focus"}
                             >
                             </Select>
                         </div>
@@ -365,6 +367,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                             onSelectArticle(item.model)
                                         }}
                                         selectedLabel={t('article')}
+                                        popupClassName={"remove-input-focus"}
                                     >
                                     </Select>
                                     :
@@ -383,13 +386,14 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                             onSelectIssue(item.model)
                                         }}
                                         selectedLabel={t('issue')}
+                                        popupClassName={"remove-input-focus"}
                                     >
                                     </Select>
                                 }
 
-                                <Input value={newDiagrammName} onChange={(i) => {
+                                <Input  value={newDiagrammName} onChange={(i) => {
                                     setNewDiagrammName(i.target.value)
-                                }} className={"pt-2"} placeholder={"Name"} label={t('diagrammName')}/>
+                                }} className={"pt-2 remove-input-focus"} placeholder={"Name"} label={t('diagrammName')}/>
 
                                 <div className={"flex flex-row justify-end pt-4"}>
                                     <Button height={ControlsHeight.S} onClick={() => {

@@ -31,3 +31,7 @@ body.plugin {
 .drawIo iframe:focus{
     outline: none !important;
 }
+
+.remove-input-focus input:focus{
+    outline: none !important;
+}
