@@ -32,6 +32,9 @@ body.plugin {
     outline: none !important;
 }
 
+.drawIo iframe {
+}
+
 .remove-input-focus input:focus{
     outline: none !important;
 }

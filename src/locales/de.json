@@ -29,5 +29,8 @@
   "attachTo": "Anhängen an",
   "leavePageQ": "Wollen Sie wirklich die Seite verlassen?",
   "remindSave": "Vergessen sie nicht zu speichern",
-  "leavePage": "Seite verlassen"
+  "leavePage": "Seite verlassen",
+  "noAttachmentsIssue": "Das Ticket enthält aktuell keine Diagramme. \nUm ein neues zu erstellen benutze den Button unten.",
+  "noAttachmentsArticle": "Der Artikel enthält aktuell keine Diagramme.\nUm ein neues zu erstellen benutze den Button unten.",
+  "loadingEditor": "Editor wird geladen..."
 }

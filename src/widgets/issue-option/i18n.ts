@@ -5,7 +5,7 @@ import English from "../../locales/en.json";
 
 let translations;
 if (YTApp.locale !== "en") {
-    translations = await host.fetchApp(`backend/translate?lang${YTApp.locale}`, {}).then(({ translation }: {
+    translations = await host.fetchApp(`backend/translate?lang=${YTApp.locale}`, {}).then(({ translation }: {
         translation: ResourceLanguage
     }) => translation).catch(() => {
     });

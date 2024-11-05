@@ -7,6 +7,7 @@ import {EventData} from "./types.ts";
 import Popup from "@jetbrains/ring-ui-built/components/popup/popup";
 import Button from "@jetbrains/ring-ui-built/components/button/button";
 import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/controls-height";
+import LoaderScreen from "@jetbrains/ring-ui-built/components/loader-screen/loader-screen";
 
 
 export default function DiagrammEditor({selectedArticle, selectedIssue, selectedAttachment, setSelectedAttachment, forArticle}: {
@@ -19,7 +20,8 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
 
     const {t} = useTranslation();
     const [xml, setXml] = useState<string>("")
-    const [confrmationHidden, setConfrmationHidden] = useState(true)
+    const [confirmationHidden, setConfirmationHidden] = useState(true)
+    const [editorVisible, setEditorVisible] = useState(false)
 
     useEffect(() => {
         window.addEventListener('message', onEvent)
@@ -37,11 +39,17 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
         setSelectedAttachment(null)
     }, [forArticle]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            setEditorVisible(true)
+        }, 2000)
+    }, []);
+
+
     function onEvent(evt: MessageEvent) {
         try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             const data = JSON.parse(evt.data) as EventData;
-            console.log(data.event)
             switch (data.event) {
                 case 'export':
                     if (data.data) {
@@ -57,7 +65,7 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                     }
                     break;
                 case 'exit':
-                    setConfrmationHidden(false)
+                    setConfirmationHidden(false)
                     break
 
             }
@@ -136,20 +144,26 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
     }, [forArticle, selectedIssue, selectedArticle])
 
     return (
-        <div style={{width: '100%', height: '100%'}}>
-            <DrawIoEmbed
-                key={'drawio_embedded'}
-                xml={xml}
-                urlParameters={{
-                    ui: 'kennedy',
-                    spin: true,
-                    libraries: true,
-                    saveAndExit: false
-                }}/>
+        <div className={"w-full h-full relative"}>
+            {!editorVisible &&
+                <LoaderScreen message={t('loadingEditor')} style={{position: 'absolute', top: "30%", left: "48%"}}/>
+            }
+
+            <div id={"editor"} className={"w-full h-full"} style={editorVisible ? {display: 'block'} : {display: "none"}}>
+                <DrawIoEmbed
+                    key={'drawio_embedded'}
+                    xml={xml}
+                    urlParameters={{
+                        ui: 'kennedy',
+                        spin: true,
+                        libraries: true,
+                        saveAndExit: false
+                    }}/>
+            </div>
             <Popup
                 className={"add-popup confirmation-popup"}
-                hidden={confrmationHidden}
-                onCloseAttempt={() => setConfrmationHidden(true)}
+                hidden={confirmationHidden}
+                onCloseAttempt={() => setConfirmationHidden(true)}
                 dontCloseOnAnchorClick={true}
                 trapFocus={true}
             >
@@ -158,7 +172,7 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                     <p className={"pb-5"}>{t('remindSave')}</p>
                     <div className={"flex flex-row justify-end space-x-2"}>
                         <Button height={ControlsHeight.S} onClick={() => {
-                            setConfrmationHidden(true)
+                            setConfirmationHidden(true)
                         }}>{t('cancel')}</Button>
                         <Button height={ControlsHeight.S} style={{backgroundColor: "var(--ring-main-color)"}} onClick={onLeavePage}>{t('leavePage')}</Button>
                     </div>

@@ -35,6 +35,10 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     const [selectHidden, setSelectHidden] = useState(false)
     const [addPopUpHidden, setAddPopUpHidden] = useState(true)
     const [newDiagrammName, setNewDiagrammName] = useState<string | undefined>(undefined)
+    const [articleIdsWithAttachment, setArticleIdsWithAttachment] = useState<string[]>([])
+    const [issueIdsWithAttachment, setIssueIdsWithAttachment] = useState<string[]>([])
+    const [projectsIdsWithAttachment, setProjectIdsWithAttachment] = useState<string[]>([])
+
 
     const projectToSelectItem = (it: Project) => ({key: it.id, label: it.name, avatar: it.iconUrl, model: it});
     const articleToSelectItem = (it: Article) => ({key: it.id, label: it.summary, model: it});
@@ -48,6 +52,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
 
     useEffect(() => {
+        loadIds()
         void host.fetchApp("backend/getAttachment", {}).then((res: CacheResponse) => {
             if (!res) return
             if ((Math.floor(Date.now() / 1000) - res.edited) < 15) {
@@ -75,25 +80,54 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                 })
             }
         })
+
     }, []);
 
+    function loadIds() {
+        let projectIds: (string | undefined)[] = []
+        void host.fetchYouTrack(`articles?fields=id,attachments(id,base64Content),project(id)`).then((articles: Article[]) => {
+            articles = articles.filter(i => i.attachments.filter(a => extractMediaType(a.base64Content) === 'image/svg+xml').length > 0 )
+            setArticleIdsWithAttachment(articles.map((article: Article) => article.id))
+            projectIds = articles.map(a => a.project?.id)
+        }).then(() => {
+            void host.fetchYouTrack(`issues?fields=id,attachments(id,base64Content),project(id)`).then((issues: Issue[]) => {
+                issues = issues.filter(i => i.attachments.filter(a => extractMediaType(a.base64Content) === 'image/svg+xml').length > 0)
+                setIssueIdsWithAttachment(issues.map((issue: Issue) => issue.id))
+                projectIds = [...projectIds, ...issues.map(a => a.project?.id)]
+                const projects = [...new Set(projectIds.filter(p => p !== undefined))]
+                console.log(projects)
+                setProjectIdsWithAttachment(projects)
+            })
+        })
 
-    function loadProjects() {
+    }
+
+
+    function loadProjects(onlyWithAttachments: boolean = false) {
         void host.fetchYouTrack(`admin/projects?fields=id,name,iconUrl`).then((projects: Project[]) => {
+            if (onlyWithAttachments) {
+                projects = projects.filter(p => projectsIdsWithAttachment.includes(p.id))
+            }
             setProjects(projects);
         })
     }
 
-    function loadArticles(project: Project | null) {
+    function loadArticles(project: Project | null, onlyWithAttachments: boolean = false) {
         if (!project) return;
         void host.fetchYouTrack(`admin/projects/${project.id}/articles?fields=id,summary,idReadable`).then((articles: Article[]) => {
+            if (onlyWithAttachments) {
+                articles = articles.filter(i => articleIdsWithAttachment.includes(i.id))
+            }
             setArticles(articles);
         })
     }
 
-    function loadIssues(project: Project | null) {
+    function loadIssues(project: Project | null, onlyWithAttachments: boolean = false) {
         if (!project) return;
         void host.fetchYouTrack(`admin/projects/${project.id}/issues?fields=id,summary,idReadable`).then((issues: Issue[]) => {
+            if (onlyWithAttachments) {
+                issues = issues.filter(i => issueIdsWithAttachment.includes(i.id))
+            }
             setIssues(issues)
         })
     }
@@ -111,7 +145,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
         }
     }, [forArticle])
 
-    const onSelectProject = useCallback((project: Project) => {
+    const onSelectProject = useCallback((project: Project, onlyWithAttachments: boolean = false) => {
         if (selectedProject?.id !== project.id) {
             setSelectedArticle(null)
             setSelectedAttachment(null)
@@ -119,9 +153,9 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
         }
         setSelectedProject(project)
         if (forArticle) {
-            loadArticles(project)
+            loadArticles(project, onlyWithAttachments)
         } else {
-            loadIssues(project)
+            loadIssues(project, onlyWithAttachments)
         }
     }, [selectedProject, selectedArticle, selectedAttachment])
 
@@ -245,7 +279,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                 loadingMessage={t('loading')}
                                 notFoundMessage={t('noProjectsFound')}
                                 data={projects?.map(projectToSelectItem)}
-                                onOpen={loadProjects}
+                                onOpen={() => loadProjects(true)}
                                 onSelect={(item) => {
                                     if (!item) return
                                     onSelectProject(item.model)
@@ -261,7 +295,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     filter={{placeholder: t("filterArticles")}}
                                     loading={articles === null}
                                     loadingMessage={t('loading')}
-                                    onOpen={() => loadArticles(selectedProject)}
+                                    onOpen={() => loadArticles(selectedProject, true)}
                                     notFoundMessage={t('noArticlesFound')}
                                     data={articles?.map(articleToSelectItem)}
                                     onSelect={(item) => {
@@ -278,7 +312,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     filter={{placeholder: t("filterIssues")}}
                                     loading={issues === null}
                                     loadingMessage={t('loading')}
-                                    onOpen={() => loadIssues(selectedProject)}
+                                    onOpen={() => loadIssues(selectedProject, true)}
                                     notFoundMessage={t('noIssuesFound')}
                                     data={issues?.map(issueToSelectItem)}
                                     onSelect={(item) => {
@@ -310,7 +344,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                     </div>
                 }
                 <div>
-                    <Button style={{backgroundColor: "var(--ring-main-color)"}} onClick={() => setAddPopUpHidden(false)} height={ControlsHeight.S}>
+                    <Button id={"new_diagramm_btn"} style={{backgroundColor: "var(--ring-main-color)", color: 'white'}} onClick={() => setAddPopUpHidden(false)} height={ControlsHeight.S}>
                         {t('newDiagramm')}
                         <Popup
                             className={"add-popup"}
@@ -391,7 +425,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     </Select>
                                 }
 
-                                <Input  value={newDiagrammName} onChange={(i) => {
+                                <Input value={newDiagrammName} onChange={(i) => {
                                     setNewDiagrammName(i.target.value)
                                 }} className={"pt-2 remove-input-focus"} placeholder={"Name"} label={t('diagrammName')}/>
 
@@ -401,7 +435,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                         setNewDiagrammName(undefined)
                                     }}> {t('cancel')}</Button>
                                     <Button height={ControlsHeight.S} onClick={() => onAddNewDiagramm()} className={"ms-2"}
-                                            style={{backgroundColor: 'var(--ring-main-color)'}}> {t('add')}</Button>
+                                            style={{backgroundColor: 'var(--ring-main-color)', color: 'white'}}> {t('add')}</Button>
                                 </div>
 
                             </div>

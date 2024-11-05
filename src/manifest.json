@@ -13,8 +13,8 @@
       "indexPath": "article-option/index.html",
       "extensionPoint": "ARTICLE_OPTIONS_MENU_ITEM",
       "expectedDimensions": {
-        "height": 80,
-        "width": 80
+        "height": 230,
+        "width": 330
       }
     },
     {
@@ -23,8 +23,8 @@
       "indexPath": "issue-option/index.html",
       "extensionPoint": "ISSUE_OPTIONS_MENU_ITEM",
       "expectedDimensions": {
-        "height": 80,
-        "width": 80
+        "height": 230,
+        "width": 330
       }
     },
     {

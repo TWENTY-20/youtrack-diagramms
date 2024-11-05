@@ -1,9 +1,11 @@
+//import English from "./locales/en.json"
+
+import German from "./locales/de.json"
 const languages = new Map()
-// import English from "./locales/en.json"
-// languages.set("en", English)
+languages.set("de", German)
 
 
-// eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef,@typescript-eslint/no-unsafe-member-access
 exports.httpHandler = {
     endpoints: [
         {
@@ -40,9 +42,6 @@ exports.httpHandler = {
                 }
                 ctx.response.json(result)
             }
-
         }
-
-
     ]
 };

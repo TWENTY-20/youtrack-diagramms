@@ -30,5 +30,8 @@
   "attachTo": "Attach to",
   "leavePageQ": "Do you really want to leave this Page?",
   "remindSave": "Don´t forget to save your changes",
-  "leavePage": "Leave page"
+  "leavePage": "Leave page",
+  "noAttachmentsIssue": "The ticket does not contain any diagrams. \nTo create a new one, use the button below.",
+  "noAttachmentsArticle": "The article does not contain any diagrams. \nTo create a new one, use the button below.",
+  "loadingEditor": "Loading editor..."
 }
