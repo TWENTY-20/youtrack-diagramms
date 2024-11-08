@@ -4,9 +4,11 @@ import YTApp from "./youTrackApp.ts";
 import {ArticleAttachment} from "../full-page/entities.ts";
 import {host} from "../full-page/youTrackApp.ts";
 import Button from "@jetbrains/ring-ui-built/components/button/button";
-import ClickableLink from "@jetbrains/ring-ui-built/components/link/clickableLink";
 import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/controls-height";
 import LoaderScreen from "@jetbrains/ring-ui-built/components/loader-screen/loader-screen";
+import AttachmentItem from "./AttachmentItem.tsx";
+import fetchPaginated from "../full-page/util.ts";
+
 
 export default function App() {
     const {t} = useTranslation()
@@ -16,9 +18,8 @@ export default function App() {
 
 
     useEffect(() => {
-        void host.fetchYouTrack(`articles/${YTApp.entity.id}/attachments?fields=id,name,extension,base64Content,article`).then((attachments: ArticleAttachment[]) => {
+        void fetchPaginated<ArticleAttachment>(`articles/${YTApp.entity.id}/attachments?fields=id,name,extension,base64Content,article,size`).then((attachments: ArticleAttachment[]) => {
             attachments = attachments.filter(i => extractMediaType(i.base64Content) === 'image/svg+xml')
-            console.log(attachments)
             setAttachments(attachments)
             setIsLoading(false)
         })
@@ -65,9 +66,7 @@ export default function App() {
                     :
                     attachments.length > 0 ?
                         attachments.map((it: ArticleAttachment, index) =>
-                            <ClickableLink key={index} className={'attachmentItem'} onClick={() => onSelectAttachment(it)}>
-                                {it.name}
-                            </ClickableLink>
+                            <AttachmentItem key={index} attachment={it} onSelectAttachment={onSelectAttachment}/>
                         )
                         :
                         <div>

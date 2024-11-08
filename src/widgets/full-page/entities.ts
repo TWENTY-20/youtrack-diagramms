@@ -24,6 +24,8 @@ export interface Attachment {
     name: string
     extension: string
     base64Content: string
+    mimeType: string
+    size?: number
 }
 
 export interface ArticleAttachment extends Attachment {

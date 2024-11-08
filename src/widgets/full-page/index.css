@@ -38,3 +38,6 @@ body.plugin {
 .remove-input-focus input:focus{
     outline: none !important;
 }
+.forceFullWidth{
+    width: 100% !important;
+}
