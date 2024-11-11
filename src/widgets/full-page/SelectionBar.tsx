@@ -143,6 +143,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
         })
     }, [issueIdsWithAttachment])
 
+
     const loadAttachments = useCallback((wrapper: AttachmentWrapper | null) => {
         if (wrapper === null) {
             setAttachments(null)
