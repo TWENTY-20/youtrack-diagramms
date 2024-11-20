@@ -1,11 +1,12 @@
-export interface Project {
+export interface BaseEntity {
     id: string
+}
+export interface Project extends BaseEntity {
     name: string
     iconUrl: string
 }
 
-export interface AttachmentWrapper {
-    id: string
+export interface AttachmentWrapper extends BaseEntity {
     summary: string
     idReadable: string
     project?: Project

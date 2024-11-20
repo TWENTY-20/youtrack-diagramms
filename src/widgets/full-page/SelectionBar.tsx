@@ -8,7 +8,7 @@ import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/control
 import Popup from "@jetbrains/ring-ui-built/components/popup/popup";
 import Input from "@jetbrains/ring-ui-built/components/input/input";
 import {CacheResponse} from "./types.ts";
-import fetchPaginated from "./util.ts";
+import {fetchAll, fetchSection} from "./util.ts";
 
 
 export default function SelectionBar({selectedArticle, setSelectedArticle, selectedAttachment, setSelectedAttachment, selectedIssue, setSelectedIssue, forArticle, setForArticle}: {
@@ -22,6 +22,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     setForArticle: (forArticle: boolean) => void;
 }) {
 
+
     const {t} = useTranslation();
     const [projects, setProjects] = useState<Project[] | null>(null)
     const [selectedProject, setSelectedProject] = useState<Project | null>(null)
@@ -31,12 +32,9 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
     const [addPopUpHidden, setAddPopUpHidden] = useState(true)
     const [newDiagrammName, setNewDiagrammName] = useState<string | undefined>(undefined)
-    const [articleIdsWithAttachment, setArticleIdsWithAttachment] = useState<string[]>([])
-    const [issueIdsWithAttachment, setIssueIdsWithAttachment] = useState<string[]>([])
-    const [projectsIdsWithAttachment, setProjectIdsWithAttachment] = useState<string[]>([])
 
-    const [projectsLoading, setProjectsLoading] = useState(false)
-
+    const [currentSkip, setCurrentSkip] = useState<number>(0)
+    const [filterText, setFilterText] = useState('')
 
     const projectToSelectItem = (it: Project) => ({key: it.id, label: it.name, avatar: it.iconUrl, model: it});
     const articleToSelectItem = (it: Article) => ({key: it.id, label: it.summary, model: it});
@@ -48,6 +46,8 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     const nullableIssueToSelectItem = (it: Issue | null) => (it === null ? null : issueToSelectItem(it));
     const nullableAttachmentToSelectItem = (it: Attachment | null) => (it === null ? null : attachmentToSelectItem(it));
 
+
+    const PAGINATION_STEP = 1000
 
     useEffect(() => {
         void host.fetchApp("backend/getAttachment", {}).then((res: CacheResponse) => {
@@ -80,96 +80,86 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     }, []);
 
     useEffect(() => {
-        setProjectsLoading(true)
-        setProjectIdsWithAttachment([])
         setSelectedProject(null)
         setSelectedIssue(null)
         setSelectedArticle(null)
-        void loadIds(forArticle).then((ids) => loadProjects(true, ids).then(()=> setProjectsLoading(false)))
+        setSelectedAttachment(null)
+        setProjects(null)
+        setArticles(null)
+        setIssues(null)
+        setAttachments(null)
+        setCurrentSkip(0)
     }, [forArticle]);
 
 
-    async function loadIds(forArticle: boolean) {
-        if (forArticle) {
-            return await fetchPaginated<Article>(`articles?fields=id,attachments(id,mimeType),project(id)`).then((articles: Article[]) => {
-                articles = articles.filter(i => i.attachments.filter(a => a.mimeType === 'image/svg+xml').length > 0)
-                setArticleIdsWithAttachment(articles.map((article: Article) => article.id))
-                const p = articles.map(a => a.project?.id).filter(p => p !== undefined)
-                setProjectIdsWithAttachment(p)
-                return p
-            })
-        } else {
-            return await fetchPaginated<Issue>(`issues?fields=id,attachments(id,mimeType),project(id)`).then((issues: Issue[]) => {
-                issues = issues.filter(i => i.attachments.filter(a => a.mimeType === 'image/svg+xml').length > 0)
-                setIssueIdsWithAttachment(issues.map((issue: Issue) => issue.id))
-                const p = issues.map(a => a.project?.id).filter(p => p !== undefined)
-                setProjectIdsWithAttachment(p)
-                return p
-            })
-        }
-    }
-
-
-    async function loadProjects(onlyWithAttachments: boolean = false, validIds: string[] | undefined = undefined) {
-        await fetchPaginated<Project>(`admin/projects?fields=id,name,iconUrl`).then((projects: Project[]) => {
-            if (onlyWithAttachments) {
-                if (validIds !== undefined) {
-                    projects = projects.filter(p => validIds.includes(p.id))
+    const loadProjects = useCallback((onlyWithAttachments: boolean = false) => {
+        setCurrentSkip(0)
+        void fetchAll<Project>('admin/projects?fields=id,name,iconUrl').then(async projects => {
+                if (onlyWithAttachments) {
+                    const result: Project[] = []
+                    if (forArticle) {
+                        for (const project of projects) {
+                            await fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}+attachments:*.svg`, 0, 1).then(a => {
+                                if (a.length > 0) result.push(project)
+                            })
+                        }
+                    } else {
+                        for (const project of projects) {
+                            await fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}+attachments:*.svg`, 0, 1).then(a => {
+                                if (a.length > 0) result.push(project)
+                            })
+                        }
+                    }
+                    setProjects(result)
                 } else {
-                    projects = projects.filter(p => projectsIdsWithAttachment.includes(p.id))
+                    setProjects(projects)
                 }
             }
-            setProjects(projects);
-        })
-    }
+        )
+    }, [forArticle])
 
     const loadArticles = useCallback((project: Project | null, onlyWithAttachments: boolean = false) => {
         if (!project) return;
-        void fetchPaginated<Article>(`admin/projects/${project.id}/articles?fields=id,summary,idReadable`).then((articles: Article[]) => {
-            if (onlyWithAttachments) {
-                articles = articles.filter(i => articleIdsWithAttachment.includes(i.id))
-            }
-            setArticles(articles);
+        const query = onlyWithAttachments ? '+attachments:*.svg' : ''
+        void fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}${query}`, 0, PAGINATION_STEP).then((a: Article[]) => {
+            setArticles(a)
+            setCurrentSkip(PAGINATION_STEP)
         })
-    }, [articleIdsWithAttachment])
+    }, [articles, setArticles])
 
     const loadIssues = useCallback((project: Project | null, onlyWithAttachments: boolean = false) => {
         if (!project) return;
-        void fetchPaginated<Issue>(`admin/projects/${project.id}/issues?fields=id,summary,idReadable`).then((issues: Issue[]) => {
-            if (onlyWithAttachments) {
-                issues = issues.filter(i => issueIdsWithAttachment.includes(i.id))
-            }
-            setIssues(issues)
+        const query = onlyWithAttachments ? '+attachments:*.svg' : ''
+        void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}${query}`, 0, PAGINATION_STEP).then((a: Issue[]) => {
+            setIssues(a)
+            setCurrentSkip(PAGINATION_STEP)
         })
-    }, [issueIdsWithAttachment])
+    }, [issues, setIssues])
 
 
     const loadAttachments = useCallback((wrapper: AttachmentWrapper | null) => {
+        console.log('attach')
+        console.log(wrapper)
         if (wrapper === null) {
             setAttachments(null)
             setSelectedAttachment(null)
         } else {
             const target = forArticle ? 'articles' : 'issues'
-            void fetchPaginated<Attachment>(`${target}/${wrapper.idReadable}/attachments?fields=id,name,extension,base64Content,mimeType`).then((attachments: Attachment[]) => {
+            void fetchAll<Attachment>(`${target}/${wrapper.idReadable}/attachments?fields=id,name,extension,base64Content,mimeType`).then((attachments: Attachment[]) => {
                 attachments = attachments.filter(i => i.mimeType === 'image/svg+xml')
                 setAttachments(attachments)
             })
         }
     }, [forArticle])
 
-    const onSelectProject = useCallback((project: Project, onlyWithAttachments: boolean = false) => {
+    const onSelectProject = useCallback((project: Project) => {
         if (selectedProject?.id !== project.id) {
             setSelectedArticle(null)
             setSelectedAttachment(null)
             setSelectedIssue(null)
         }
         setSelectedProject(project)
-        if (forArticle) {
-            loadArticles(project, onlyWithAttachments)
-        } else {
-            loadIssues(project, onlyWithAttachments)
-        }
-    }, [selectedProject, selectedArticle, selectedAttachment, articleIdsWithAttachment, issueIdsWithAttachment])
+    }, [selectedProject, selectedArticle, selectedAttachment])
 
 
     const onSelectArticle = useCallback((article: Article) => {
@@ -209,6 +199,65 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
         }
     }, [newDiagrammName])
 
+    const onLoadMoreArticles = useCallback((onlyWithAttachments: boolean = false) => {
+        console.log('loadMoreArticles')
+        if (!selectedProject) return;
+        let query = onlyWithAttachments ? `+attachments:*.svg` : ''
+        query = query + (filterText !== '' ? `+*${filterText}*` : '')
+
+        void fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, currentSkip, PAGINATION_STEP).then((a: Article[]) => {
+            if (a.length === 0) return;
+            if (articles !== null) {
+                setArticles([...articles, ...a])
+                return
+            }
+            setArticles(a)
+        }).finally(() => setCurrentSkip(currentSkip + PAGINATION_STEP))
+    }, [selectedProject, currentSkip, articles, filterText]);
+
+    const onFilterArticles = useCallback((text: string, onlyWithAttachments: boolean = false) => {
+        console.log(text)
+        if (!selectedProject) return;
+        setFilterText(text)
+        let query = onlyWithAttachments ? `+attachments:*.svg` : ''
+        query = query + (filterText !== '' ? `+*${filterText}*` : '')
+        void fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, 0, PAGINATION_STEP).then((list: Article[]) => {
+            setArticles(list)
+            setCurrentSkip(PAGINATION_STEP)
+        })
+    }, [selectedProject]);
+
+    const onLoadMoreIssues = useCallback((onlyWithAttachments: boolean = false) => {
+        if (!selectedProject) return;
+        let query = onlyWithAttachments ? `+attachments:*.svg` : ''
+        query = query + (filterText !== '' ? `+*${filterText}*` : '')
+        void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, currentSkip, PAGINATION_STEP).then((a: Issue[]) => {
+            if (a.length === 0) return;
+            if (issues !== null) {
+                setIssues([...issues, ...a])
+                return
+            }
+            setIssues(a)
+        }).finally(() => setCurrentSkip(currentSkip + PAGINATION_STEP))
+    }, [selectedProject, currentSkip, issues, filterText]);
+
+    const onFilterIssues = useCallback((text: string, onlyWithAttachments: boolean = false) => {
+        if (!selectedProject) return;
+        setFilterText(text)
+        let query = onlyWithAttachments ? `+attachments:*.svg` : ''
+        query = query + (filterText !== '' ? `+*${filterText}*` : '')
+        void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, 0, PAGINATION_STEP).then((list: Issue[]) => {
+            setIssues(list)
+            setCurrentSkip(PAGINATION_STEP)
+        })
+    }, [selectedProject]);
+
+
+    function escapeProjectName(name: string) {
+        name = name.replace(' ', '+')
+        return `%7B${name}%7D`
+    }
+
 
     return (
         <div className={"flex flex-col p-2 pb-6"}>
@@ -235,12 +284,10 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                             notFoundMessage={t('noProjectsFound')}
                             data={projects?.map(projectToSelectItem)}
                             onBeforeOpen={() => setProjects(null)}
-                            onOpen={() => {
-                                if (!projectsLoading) void loadProjects(true)
-                            }}
+                            onOpen={() => loadProjects(true)}
                             onSelect={(item) => {
                                 if (!item) return
-                                onSelectProject(item.model, true)
+                                onSelectProject(item.model)
                             }}
                             popupClassName={"remove-input-focus"}
                         >
@@ -253,8 +300,9 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                 filter={{placeholder: t("filterArticles")}}
                                 loading={articles === null}
                                 loadingMessage={t('loading')}
-                                onBeforeOpen={() => setArticles(null)}
                                 onOpen={() => loadArticles(selectedProject, true)}
+                                onLoadMore={() => onLoadMoreArticles(true)}
+                                offset={10}
                                 notFoundMessage={t('noArticlesFound')}
                                 data={articles?.map(articleToSelectItem)}
                                 onSelect={(item) => {
@@ -262,6 +310,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     onSelectArticle(item.model)
                                 }}
                                 popupClassName={"remove-input-focus"}
+                                onFilter={(text) => onFilterArticles(text, true)}
                             >
                             </Select>
                             :
@@ -271,8 +320,10 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                 filter={{placeholder: t("filterIssues")}}
                                 loading={issues === null}
                                 loadingMessage={t('loading')}
-                                onBeforeOpen={() => setIssues(null)}
+
                                 onOpen={() => loadIssues(selectedProject, true)}
+                                onLoadMore={() => onLoadMoreIssues(true)}
+                                onFilter={(text) => onFilterIssues(text, true)}
                                 notFoundMessage={t('noIssuesFound')}
                                 data={issues?.map(issueToSelectItem)}
                                 onSelect={(item) => {
@@ -291,7 +342,6 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                             loading={attachments === null}
                             loadingMessage={t('loading')}
                             notFoundMessage={t('noAttachmentsFound')}
-                            onBeforeOpen={() => setAttachments(null)}
                             onOpen={() => loadAttachments(forArticle ? selectedArticle : selectedIssue)}
                             data={attachments?.map(attachmentToSelectItem)}
                             onSelect={(item) => {
@@ -341,6 +391,8 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     onSelect={(item) => {
                                         if (!item) return
                                         onSelectProject(item.model)
+                                        setArticles(null)
+                                        setIssues(null)
                                     }}
                                     selectedLabel={t('project')}
                                     popupClassName={"remove-input-focus"}
@@ -357,6 +409,9 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                         loadingMessage={t('loading')}
                                         notFoundMessage={t('noArticlesFound')}
                                         data={articles?.map(articleToSelectItem)}
+                                        onOpen={() => loadArticles(selectedProject)}
+                                        onLoadMore={onLoadMoreArticles}
+                                        onFilter={onFilterArticles}
                                         onSelect={(item) => {
                                             if (!item) return
                                             onSelectArticle(item.model)
@@ -374,6 +429,8 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                         loading={issues === null}
                                         loadingMessage={t('loading')}
                                         onOpen={() => loadIssues(selectedProject)}
+                                        onLoadMore={onLoadMoreIssues}
+                                        onFilter={onFilterIssues}
                                         notFoundMessage={t('noIssuesFound')}
                                         data={issues?.map(issueToSelectItem)}
                                         onSelect={(item) => {
@@ -398,12 +455,10 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     <Button height={ControlsHeight.S} onClick={() => onAddNewDiagramm()} className={"ms-2"}
                                             style={{backgroundColor: 'var(--ring-main-color)', color: 'white'}}> {t('add')}</Button>
                                 </div>
-
                             </div>
                         </Popup>
                     </Button>
                 </div>
-
             </div>
         </div>
     )

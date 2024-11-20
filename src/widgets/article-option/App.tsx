@@ -7,7 +7,7 @@ import Button from "@jetbrains/ring-ui-built/components/button/button";
 import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/controls-height";
 import LoaderScreen from "@jetbrains/ring-ui-built/components/loader-screen/loader-screen";
 import AttachmentItem from "./AttachmentItem.tsx";
-import fetchPaginated from "../full-page/util.ts";
+import {fetchAll} from "../full-page/util.ts";
 
 
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
 
 
     useEffect(() => {
-        void fetchPaginated<ArticleAttachment>(`articles/${YTApp.entity.id}/attachments?fields=id,name,extension,base64Content,article,size`).then((attachments: ArticleAttachment[]) => {
+        void fetchAll<ArticleAttachment>(`articles/${YTApp.entity.id}/attachments?fields=id,name,extension,base64Content,article,size`).then((attachments: ArticleAttachment[]) => {
             attachments = attachments.filter(i => extractMediaType(i.base64Content) === 'image/svg+xml')
             setAttachments(attachments)
             setIsLoading(false)
