@@ -311,6 +311,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                 }}
                                 popupClassName={"remove-input-focus"}
                                 onFilter={(text) => onFilterArticles(text, true)}
+                                renderOptimization={false}
                             >
                             </Select>
                             :
@@ -418,6 +419,8 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                         }}
                                         selectedLabel={t('article')}
                                         popupClassName={"remove-input-focus"}
+                                        renderOptimization={false}
+
                                     >
                                     </Select>
                                     :

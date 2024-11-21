@@ -7,7 +7,6 @@ import {EventData} from "./types.ts";
 import Popup from "@jetbrains/ring-ui-built/components/popup/popup";
 import Button from "@jetbrains/ring-ui-built/components/button/button";
 import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/controls-height";
-import LoaderScreen from "@jetbrains/ring-ui-built/components/loader-screen/loader-screen";
 
 
 export default function DiagrammEditor({selectedArticle, selectedIssue, selectedAttachment, setSelectedAttachment, forArticle}: {
@@ -21,7 +20,6 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
     const {t} = useTranslation();
     const [xml, setXml] = useState<string>("")
     const [confirmationHidden, setConfirmationHidden] = useState(true)
-    const [editorVisible, setEditorVisible] = useState(false)
 
     useEffect(() => {
         window.addEventListener('message', onEvent)
@@ -39,11 +37,6 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
         setSelectedAttachment(null)
     }, [forArticle]);
 
-    useEffect(() => {
-        setTimeout(() => {
-            setEditorVisible(true)
-        }, 2000)
-    }, []);
 
 
     function onEvent(evt: MessageEvent) {
@@ -54,6 +47,7 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                 case 'export':
                     if (data.data) {
                         void onSaveDiagramm(data.data).then(v => {
+                            console.log(v)
                             if (v) {
                                 host.alert(t('alert_diagramm_saved'))
                             } else {
@@ -76,6 +70,7 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
 
 
     const onSaveDiagramm = async (data: string) => {
+        console.log('onSaveDiagramm')
         if (forArticle) {
             if (selectedArticle === null || selectedAttachment === null) {
                 host.alert(t('alert_select_items_article'))
@@ -83,6 +78,7 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                     resolve(false)
                 })
             } else {
+                console.log('article')
                 return saveDiagramm(selectedArticle, selectedAttachment, 'articles', data)
             }
 
@@ -93,18 +89,35 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                     resolve(false)
                 })
             } else {
+                console.log('issue')
                 return saveDiagramm(selectedIssue, selectedAttachment, 'issues', data)
             }
         }
     }
 
     async function saveDiagramm(wrapper: AttachmentWrapper, selectedAttachment: Attachment, target: string, data: string) {
+        console.log('1')
+        console.log(wrapper)
+        console.log(selectedAttachment)
+        console.log(target)
+        console.log(data)
         if (selectedAttachment.id === 'new') {
+        console.log('2')
             const formData = new FormData();
             return fetch(data ?? "data:;base64")
-                .then(res => res.blob())
-                .then((blob) => formData.append(selectedAttachment.name, new File([blob], selectedAttachment.name)))
+                .then(res => {
+                    console.log('3')
+                    console.log(res)
+                    return res.blob()
+                })
+                .then((blob) => {
+                    console.log('4')
+                    console.log(blob)
+                    return formData.append(selectedAttachment.name, new File([blob], selectedAttachment.name))
+                })
                 .then(async () => {
+                    console.log('5')
+                    console.log(formData)
                     return host.fetchYouTrack(`${target}/${wrapper.idReadable}/attachments?fields=id,name,extension,base64Content`, {
                         method: "POST",
                         headers: {
@@ -114,12 +127,15 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                         body: formData
                     });
                 }).then((res: Attachment[]) => {
+                    console.log('6')
+                    console.log(res)
                     if (res.length > 0) {
                         setSelectedAttachment(res[0]);
                         return true
                     } else return false
                 })
         } else {
+            console.log('7')
             const diagramm = {
                 name: selectedAttachment.name,
                 base64Content: data,
@@ -145,11 +161,7 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
 
     return (
         <div className={"w-full h-full relative"}>
-            {!editorVisible &&
-                <LoaderScreen message={t('loadingEditor')} style={{position: 'absolute', top: "30%", left: "48%"}}/>
-            }
-
-            <div id={"editor"} className={"w-full h-full"} style={editorVisible ? {display: 'block'} : {display: "none"}}>
+            <div id={"editor"} className={"w-full h-full"}>
                 <DrawIoEmbed
                     key={'drawio_embedded'}
                     xml={xml}

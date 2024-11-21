@@ -1,7 +1,7 @@
 import SelectionBar from "./SelectionBar.tsx";
 import DiagrammEditor from "./DiagrammEditor.tsx";
 import {Article, Attachment, Issue} from "./entities.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export default function App() {
 
@@ -12,13 +12,18 @@ export default function App() {
     const [forArticle, setForArticle] = useState<boolean>(true)
 
 
+    useEffect(() => {
+        window.onresize = () => {
+            document.documentElement.style.setProperty('--window-height', window.outerHeight.toString()+'px')
+        }
+    }, []);
+
 
     return (
-
-        <div style={{height: '100rem', position: 'relative'}}>
+        <div style={{position: 'relative'}}>
             <SelectionBar key={'selection_bar'} selectedArticle={selectedArticle} setSelectedArticle={setSelectedArticle} selectedAttachment={selectedAttachment}
-                          setSelectedAttachment={setSelectedAttachment} selectedIssue={selectedIssue} setSelectedIssue={setSelectedIssue} forArticle={forArticle} setForArticle={setForArticle} />
-            <div className={"drawIo"} style={{height: '92%'}}>
+                          setSelectedAttachment={setSelectedAttachment} selectedIssue={selectedIssue} setSelectedIssue={setSelectedIssue} forArticle={forArticle} setForArticle={setForArticle}/>
+            <div className={"drawIo"}>
                 <DiagrammEditor
                     key={'diagramm_editor'}
                     selectedArticle={selectedArticle}

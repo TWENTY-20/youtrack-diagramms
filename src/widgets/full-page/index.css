@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --window-height: 1080px;
+}
+
 body.plugin {
-    padding: 0 16px;
+    padding-left: 16px;
     background-color: var(--ring-content-background-color);
     color: var(--ring-text-color);
     font-size: var(--ring-font-size);
@@ -24,20 +28,28 @@ body.plugin {
     top: 40% !important;
     left: calc(50% - 155px) !important;
 }
+
 .confirmation-popup {
     max-height: 200px !important;
 }
 
-.drawIo iframe:focus{
+
+.drawIo {
+    height: calc(var(--window-height) - 290px);
+}
+
+
+.drawIo iframe:focus {
     outline: none !important;
 }
 
 .drawIo iframe {
 }
 
-.remove-input-focus input:focus{
+.remove-input-focus input:focus {
     outline: none !important;
 }
-.forceFullWidth{
+
+.forceFullWidth {
     width: 100% !important;
 }

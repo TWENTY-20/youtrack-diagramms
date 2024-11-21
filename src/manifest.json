@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/youtrack-app.json",
-  "name": "diagramm-editor",
-  "title": "Diagramm Editor",
+  "name": "diagram-editor",
+  "title": "Diagram Editor",
   "description": "Create and edit Diagramms in Youtrack",
   "changeNotes": "See https://plugins.jetbrains.com/plugin/25787-diagramm-editor/release-notes",
   "version": "1.0.0",
@@ -10,7 +10,7 @@
   "widgets": [
     {
       "key": "diagramm-article-option-item",
-      "name": "Edit diagramms",
+      "name": "Edit diagrams",
       "indexPath": "article-option/index.html",
       "extensionPoint": "ARTICLE_OPTIONS_MENU_ITEM",
       "expectedDimensions": {
@@ -20,7 +20,7 @@
     },
     {
       "key": "diagramm-issue-option-item",
-      "name": "Edit diagramms",
+      "name": "Edit diagrams",
       "indexPath": "issue-option/index.html",
       "extensionPoint": "ISSUE_OPTIONS_MENU_ITEM",
       "expectedDimensions": {
@@ -30,7 +30,7 @@
     },
     {
       "key": "editor",
-      "name": "Diagramms",
+      "name": "Diagrams",
       "indexPath": "full-page/index.html",
       "extensionPoint": "MAIN_MENU_ITEM"
     }

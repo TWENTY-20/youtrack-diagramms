@@ -18,6 +18,7 @@
     "autoprefixer": "^10.4.20",
     "build": "^0.1.4",
     "i18next": "^23.14.0",
+    "jquery": "^3.7.1",
     "npm": "^10.9.0",
     "postcss": "^8.4.45",
     "react": "^18.3.1",
@@ -32,6 +33,7 @@
     "vite-plugin-static-copy": "^1.0.6"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.32",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
