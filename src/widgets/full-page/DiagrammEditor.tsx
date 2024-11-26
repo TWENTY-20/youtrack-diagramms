@@ -38,7 +38,6 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
     }, [forArticle]);
 
 
-
     function onEvent(evt: MessageEvent) {
         try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -47,7 +46,6 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                 case 'export':
                     if (data.data) {
                         void onSaveDiagramm(data.data).then(v => {
-                            console.log(v)
                             if (v) {
                                 host.alert(t('alert_diagramm_saved'))
                             } else {
@@ -70,7 +68,6 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
 
 
     const onSaveDiagramm = async (data: string) => {
-        console.log('onSaveDiagramm')
         if (forArticle) {
             if (selectedArticle === null || selectedAttachment === null) {
                 host.alert(t('alert_select_items_article'))
@@ -78,7 +75,6 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                     resolve(false)
                 })
             } else {
-                console.log('article')
                 return saveDiagramm(selectedArticle, selectedAttachment, 'articles', data)
             }
 
@@ -89,57 +85,40 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                     resolve(false)
                 })
             } else {
-                console.log('issue')
                 return saveDiagramm(selectedIssue, selectedAttachment, 'issues', data)
             }
         }
     }
 
     async function saveDiagramm(wrapper: AttachmentWrapper, selectedAttachment: Attachment, target: string, data: string) {
-        console.log('1')
-        console.log(wrapper)
-        console.log(selectedAttachment)
-        console.log(target)
-        console.log(data)
+        const diagramm = {
+            name: selectedAttachment.name,
+            base64Content: data,
+        }
         if (selectedAttachment.id === 'new') {
-        console.log('2')
-            const formData = new FormData();
-            return fetch(data ?? "data:;base64")
-                .then(res => {
-                    console.log('3')
-                    console.log(res)
-                    return res.blob()
+            //const formData = new FormData();
+            if (target === 'issues') {
+                return host.fetchYouTrack(`${target}/${wrapper.idReadable}/attachments?fields=id,name,extension,base64Content`, {
+                    method: "POST",
+                    body: diagramm
+                }).then((res: Attachment) => {
+                    return !!res;
                 })
-                .then((blob) => {
-                    console.log('4')
-                    console.log(blob)
-                    return formData.append(selectedAttachment.name, new File([blob], selectedAttachment.name))
+
+            } else {
+                const body = {
+                    id: wrapper.idReadable,
+                    content: data,
+                    filename: selectedAttachment.name
+                }
+                return host.fetchApp("backend/addAttachmentToArticle", {
+                    method: "POST",
+                    body: body
+                }).then((res) => {
+                    return !!res
                 })
-                .then(async () => {
-                    console.log('5')
-                    console.log(formData)
-                    return host.fetchYouTrack(`${target}/${wrapper.idReadable}/attachments?fields=id,name,extension,base64Content`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": undefined,
-                        },
-                        sendRawBody: true,
-                        body: formData
-                    });
-                }).then((res: Attachment[]) => {
-                    console.log('6')
-                    console.log(res)
-                    if (res.length > 0) {
-                        setSelectedAttachment(res[0]);
-                        return true
-                    } else return false
-                })
-        } else {
-            console.log('7')
-            const diagramm = {
-                name: selectedAttachment.name,
-                base64Content: data,
             }
+        } else {
             return host.fetchYouTrack(`${target}/${wrapper.idReadable}/attachments/${selectedAttachment.id}?fields=id,name,extension,base64Content`, {
                 method: "POST",
                 body: diagramm

@@ -44,6 +44,7 @@ body.plugin {
 }
 
 .drawIo iframe {
+    border-radius: var(--ring-border-radius);
 }
 
 .remove-input-focus input:focus {

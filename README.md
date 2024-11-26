@@ -1,4 +1,4 @@
-# YouTrack Diagramms Editor
+# YouTrack Diagrams Editor
 
 Once installed into [JetBrains YouTrack](https://www.jetbrains.com/youtrack/), this App provides a Drawio-Editor for editing diagrams.
 

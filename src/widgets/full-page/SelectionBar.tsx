@@ -99,6 +99,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                     const result: Project[] = []
                     if (forArticle) {
                         for (const project of projects) {
+                            console.log(escapeProjectName(project.name))
                             await fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}+attachments:*.svg`, 0, 1).then(a => {
                                 if (a.length > 0) result.push(project)
                             })
@@ -138,8 +139,6 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
 
     const loadAttachments = useCallback((wrapper: AttachmentWrapper | null) => {
-        console.log('attach')
-        console.log(wrapper)
         if (wrapper === null) {
             setAttachments(null)
             setSelectedAttachment(null)
@@ -200,7 +199,6 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     }, [newDiagrammName])
 
     const onLoadMoreArticles = useCallback((onlyWithAttachments: boolean = false) => {
-        console.log('loadMoreArticles')
         if (!selectedProject) return;
         let query = onlyWithAttachments ? `+attachments:*.svg` : ''
         query = query + (filterText !== '' ? `+*${filterText}*` : '')
@@ -216,7 +214,6 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     }, [selectedProject, currentSkip, articles, filterText]);
 
     const onFilterArticles = useCallback((text: string, onlyWithAttachments: boolean = false) => {
-        console.log(text)
         if (!selectedProject) return;
         setFilterText(text)
         let query = onlyWithAttachments ? `+attachments:*.svg` : ''
@@ -246,6 +243,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
         setFilterText(text)
         let query = onlyWithAttachments ? `+attachments:*.svg` : ''
         query = query + (filterText !== '' ? `+*${filterText}*` : '')
+        query = encodeURIComponent(query)
         void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, 0, PAGINATION_STEP).then((list: Issue[]) => {
             setIssues(list)
             setCurrentSkip(PAGINATION_STEP)
@@ -254,8 +252,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
 
     function escapeProjectName(name: string) {
-        name = name.replace(' ', '+')
-        return `%7B${name}%7D`
+        return encodeURIComponent(`{${name}}`)
     }
 
 
