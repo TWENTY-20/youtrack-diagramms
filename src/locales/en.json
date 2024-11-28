@@ -33,5 +33,9 @@
   "leavePage": "Leave page",
   "noAttachmentsIssue": "The ticket does not contain any diagrams. \nTo create a new one, use the button below.",
   "noAttachmentsArticle": "The article does not contain any diagrams. \nTo create a new one, use the button below.",
-  "loadingEditor": "Loading editor..."
+  "loadingEditor": "Loading editor...",
+  "alert_diagramm_error": "An error has occurred. The diagramm was not saved.",
+  "alert_noArticlesWithAttachments": "In this project are not articles with diagrams",
+  "alert_noIssuesWithAttachments": "In this project are not issues with diagrams",
+  "tooltip_selectionBar": "Only articles/tickets that contain diagrams are displayed in this selection."
 }

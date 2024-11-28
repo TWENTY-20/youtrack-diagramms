@@ -54,3 +54,11 @@ body.plugin {
 .forceFullWidth {
     width: 100% !important;
 }
+
+.infoIcon {
+    color: var(--ring-icon-color);
+}
+
+.infoIcon:hover {
+    color: #d671b3;
+}

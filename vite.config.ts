@@ -33,6 +33,7 @@ export default defineConfig(({mode}) => {
             viteStaticCopy({
                 targets: [
                     { src: "./logo.svg", dest: "." },
+                    { src: "./logoDark.svg", dest: "." },
                     { src: "./manifest.json", dest: "." },
                     { src: "./entity-extensions.json", dest: "." },
                     { src: "./settings.json", dest: "." },

@@ -7,6 +7,7 @@ import {EventData} from "./types.ts";
 import Popup from "@jetbrains/ring-ui-built/components/popup/popup";
 import Button from "@jetbrains/ring-ui-built/components/button/button";
 import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/controls-height";
+import {AlertType} from "@jetbrains/ring-ui-built/components/alert/alert";
 
 
 export default function DiagrammEditor({selectedArticle, selectedIssue, selectedAttachment, setSelectedAttachment, forArticle}: {
@@ -47,8 +48,9 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                     if (data.data) {
                         void onSaveDiagramm(data.data).then(v => {
                             if (v) {
-                                host.alert(t('alert_diagramm_saved'))
+                                host.alert(t('alert_diagramm_saved'), AlertType.SUCCESS)
                             } else {
+                                host.alert(t('alert_diagramm_error'), AlertType.ERROR)
                                 console.log('not saved')
                             }
                         })

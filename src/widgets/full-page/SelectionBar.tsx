@@ -9,6 +9,10 @@ import Popup from "@jetbrains/ring-ui-built/components/popup/popup";
 import Input from "@jetbrains/ring-ui-built/components/input/input";
 import {CacheResponse} from "./types.ts";
 import {fetchAll, fetchSection} from "./util.ts";
+import {AlertType} from "@jetbrains/ring-ui-built/components/alert/alert";
+import Icon from "@jetbrains/ring-ui-built/components/icon";
+import Info from "@jetbrains/icons/info";
+import Tooltip from "@jetbrains/ring-ui-built/components/tooltip/tooltip";
 
 
 export default function SelectionBar({selectedArticle, setSelectedArticle, selectedAttachment, setSelectedAttachment, selectedIssue, setSelectedIssue, forArticle, setForArticle}: {
@@ -92,32 +96,14 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     }, [forArticle]);
 
 
-    const loadProjects = useCallback((onlyWithAttachments: boolean = false) => {
+    const loadProjects = useCallback(() => {
         setCurrentSkip(0)
-        void fetchAll<Project>('admin/projects?fields=id,name,iconUrl').then(async projects => {
-                if (onlyWithAttachments) {
-                    const result: Project[] = []
-                    if (forArticle) {
-                        for (const project of projects) {
-                            console.log(escapeProjectName(project.name))
-                            await fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}+attachments:*.svg`, 0, 1).then(a => {
-                                if (a.length > 0) result.push(project)
-                            })
-                        }
-                    } else {
-                        for (const project of projects) {
-                            await fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}+attachments:*.svg`, 0, 1).then(a => {
-                                if (a.length > 0) result.push(project)
-                            })
-                        }
-                    }
-                    setProjects(result)
-                } else {
-                    setProjects(projects)
-                }
+        void fetchAll<Project>('admin/projects?fields=id,name,iconUrl,archived').then(projects => {
+                projects = projects.filter(p => !p.archived)
+                setProjects(projects)
             }
         )
-    }, [forArticle])
+    }, [])
 
     const loadArticles = useCallback((project: Project | null, onlyWithAttachments: boolean = false) => {
         if (!project) return;
@@ -158,7 +144,11 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
             setSelectedIssue(null)
         }
         setSelectedProject(project)
-    }, [selectedProject, selectedArticle, selectedAttachment])
+        const target = forArticle ? 'articles' : 'issues'
+        void fetchSection<AttachmentWrapper>(`${target}?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}+attachments:*.svg`, 0, 1).then(a => {
+            if (a.length === 0) host.alert(forArticle ? t('alert_noArticlesWithAttachments') : t('alert_noIssuesWithAttachments'), AlertType.WARNING)
+        })
+    }, [selectedProject, selectedArticle, selectedAttachment, forArticle])
 
 
     const onSelectArticle = useCallback((article: Article) => {
@@ -281,7 +271,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                             notFoundMessage={t('noProjectsFound')}
                             data={projects?.map(projectToSelectItem)}
                             onBeforeOpen={() => setProjects(null)}
-                            onOpen={() => loadProjects(true)}
+                            onOpen={loadProjects}
                             onSelect={(item) => {
                                 if (!item) return
                                 onSelectProject(item.model)
@@ -349,6 +339,13 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                             popupClassName={"remove-input-focus"}
                         >
                         </Select>
+                        <Tooltip className={'mt-1 ml-3'} title={t('tooltip_selectionBar')}>
+                            <Icon glyph={Info}
+                                  className={'infoIcon'}
+                                  height={20}
+                                  width={20}
+                            />
+                        </Tooltip>
                     </div>
                 </div>
                 <div>
@@ -385,7 +382,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
                                     loadingMessage={t('loading')}
                                     notFoundMessage={t('noProjectsFound')}
                                     data={projects?.map(projectToSelectItem)}
-                                    onOpen={() => void loadProjects()}
+                                    onOpen={loadProjects}
                                     onSelect={(item) => {
                                         if (!item) return
                                         onSelectProject(item.model)

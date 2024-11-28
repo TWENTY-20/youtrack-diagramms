@@ -5,13 +5,13 @@ async function fetchAll<T>(path: string): Promise<T[]> {
     let stop = false
     let skip = 0;
     while (!stop) {
-        const pager = `&$skip=${skip}&$top=50`
+        const pager = `&$skip=${skip}&$top=500`
         const items = await host.fetchYouTrack(path + pager).then((items: T[]) => {
             return items
         })
-        if (items.length < 50) stop = true
+        if (items.length < 500) stop = true
         result.push(...items)
-        skip += 50
+        skip += 500
 
     }
     return result
