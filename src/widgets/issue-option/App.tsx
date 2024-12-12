@@ -25,7 +25,7 @@ export default function App() {
 
     const onSelectAttachment = (attachment: IssueAttachment | null) => {
         cacheAttachment(attachment)
-        window.open(`/app/diagram-editor/editor`, '_blank')
+        window.open(`/app/diagramm-editor/editor`, '_blank')
         window.parent.location.href = `/issue/${YTApp.entity.id}`
     }
 
