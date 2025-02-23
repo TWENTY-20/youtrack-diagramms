@@ -25,8 +25,9 @@ export default function App() {
         })
     }, []);
 
-    const onSelectAttachment = (attachment: ArticleAttachment | null) => {
-        cacheAttachment(attachment)
+    const onSelectAttachment = async (attachment: ArticleAttachment | null) => {
+        // Ensure attachment is cached before opening the editor.
+        await cacheAttachment(attachment)
         window.open(`/app/diagramm-editor/editor`, '_blank')
         window.parent.location.href = `/articles/${YTApp.entity.id}`
     }
@@ -42,14 +43,14 @@ export default function App() {
         }
     }
 
-    function cacheAttachment(attachment: ArticleAttachment | null) {
+    async function cacheAttachment(attachment: ArticleAttachment | null) {
         const body = {
             id: YTApp.entity.id,
             attachmentId: attachment?.id ?? 'new',
             edited: Math.floor(Date.now() / 1000),
             forArticle: true
         }
-        void host.fetchApp("backend/cacheAttachment", {
+        await host.fetchApp("backend/cacheAttachment", {
             method: "POST",
             body: body
         })
