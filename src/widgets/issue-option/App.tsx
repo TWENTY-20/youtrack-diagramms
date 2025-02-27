@@ -1,5 +1,5 @@
 import {useTranslation} from "react-i18next";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import YTApp from "./youTrackApp.ts";
 import {Attachment, IssueAttachment} from "../full-page/entities.ts";
 import {host} from "../full-page/youTrackApp.ts";
@@ -23,11 +23,11 @@ export default function App() {
         })
     }, []);
 
-    const onSelectAttachment = (attachment: IssueAttachment | null) => {
-        cacheAttachment(attachment)
+    const onSelectAttachment = useCallback(async (attachment: IssueAttachment | null) => {
+        await cacheAttachment(attachment)
         window.open(`/app/diagramm-editor/editor`, '_blank')
         window.parent.location.href = `/issue/${YTApp.entity.id}`
-    }
+    }, [])
 
 
     function extractMediaType(base64Content: string): string | null {
@@ -40,14 +40,14 @@ export default function App() {
         }
     }
 
-    function cacheAttachment(attachment: IssueAttachment | null) {
+    async function cacheAttachment(attachment: IssueAttachment | null) {
         const body = {
             id: YTApp.entity.id,
             attachmentId: attachment?.id ?? 'new',
             edited: Math.floor(Date.now() / 1000),
             forArticle: false
         }
-        void host.fetchApp("backend/cacheAttachment", {
+        await host.fetchApp("backend/cacheAttachment", {
             method: "POST",
             body: body
         })
@@ -64,7 +64,8 @@ export default function App() {
                     :
                     attachments.length > 0 ?
                         attachments.map((it: IssueAttachment, index) =>
-                            <AttachmentItem key={index} attachment={it} onSelectAttachment={onSelectAttachment}/>
+                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                            <AttachmentItem key={index} attachment={it} onSelectAttachment={async (it) => await onSelectAttachment(it)}/>
                         )
                         :
                         <div className={"flex items-center h-full"}>
@@ -75,9 +76,10 @@ export default function App() {
             </div>
 
             <div className={'flex flex-row pt-4'}>
-                <Button style={{backgroundColor: "var(--ring-main-color)", color: 'white'}} height={ControlsHeight.S} onClick={() => {
-                    onSelectAttachment(null)
-                }}>{t('newDiagramm')}</Button>
+                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+                <Button style={{backgroundColor: "var(--ring-main-color)", color: 'white'}} height={ControlsHeight.S} onClick={async () => await onSelectAttachment(null)}>
+                    {t('newDiagramm')}</Button>
+
             </div>
         </div>
     );
