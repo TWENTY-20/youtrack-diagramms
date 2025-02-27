@@ -1,11 +1,11 @@
-# YouTrack Diagrams Editor
+# <img src="/src/logo.svg" alt="" width="35" />  YouTrack Diagrams Editor
 
 Once installed into [JetBrains YouTrack](https://www.jetbrains.com/youtrack/), this App provides a Drawio-Editor for editing diagrams.
 
 ---
-<div style="display: flex;">
-  <h3>t<img src="https://twenty20.de/favicon.ico" alt="twenty20" width="24" style="vertical-align: -4px;"/>nty20 | YouTrack Apps and Extensions</h3>
-</div>
+
+## twenty20 | YouTrack Apps and Extensions
+
 
 We specialize in developing custom YouTrack apps and extensions tailored specifically to your needs.
 
