@@ -1,4 +1,4 @@
-import {DrawIoEmbed} from "react-drawio";
+
 import {Article, ArticleAttachment, Attachment, AttachmentWrapper, Issue} from "./entities.ts";
 import {host} from "./youTrackApp.ts";
 import {useTranslation} from "react-i18next";
@@ -8,6 +8,7 @@ import Popup from "@jetbrains/ring-ui-built/components/popup/popup";
 import Button from "@jetbrains/ring-ui-built/components/button/button";
 import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/controls-height";
 import {AlertType} from "@jetbrains/ring-ui-built/components/alert/alert";
+import {DrawIoEmbed} from "react-drawio";
 
 
 export default function DiagrammEditor({selectedArticle, selectedIssue, selectedAttachment, setSelectedAttachment, forArticle}: {
@@ -149,6 +150,7 @@ export default function DiagrammEditor({selectedArticle, selectedIssue, selected
                     urlParameters={{
                         ui: 'kennedy',
                         spin: true,
+
                         libraries: true,
                         saveAndExit: false
                     }}/>

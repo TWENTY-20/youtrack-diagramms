@@ -50,6 +50,8 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     const nullableIssueToSelectItem = (it: Issue | null) => (it === null ? null : issueToSelectItem(it));
     const nullableAttachmentToSelectItem = (it: Attachment | null) => (it === null ? null : attachmentToSelectItem(it));
 
+    const attachmentQuery = '+has:%20attachments'
+
 
     const PAGINATION_STEP = 1000
 
@@ -107,7 +109,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
     const loadArticles = useCallback((project: Project | null, onlyWithAttachments: boolean = false) => {
         if (!project) return;
-        const query = onlyWithAttachments ? '+attachments:*.svg' : ''
+        const query = onlyWithAttachments ? attachmentQuery : ''
         void fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}${query}`, 0, PAGINATION_STEP).then((a: Article[]) => {
             setArticles(a)
             setCurrentSkip(PAGINATION_STEP)
@@ -116,7 +118,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
     const loadIssues = useCallback((project: Project | null, onlyWithAttachments: boolean = false) => {
         if (!project) return;
-        const query = onlyWithAttachments ? '+attachments:*.svg' : ''
+        const query = onlyWithAttachments ? attachmentQuery : ''
         void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}${query}`, 0, PAGINATION_STEP).then((a: Issue[]) => {
             setIssues(a)
             setCurrentSkip(PAGINATION_STEP)
@@ -145,7 +147,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
         }
         setSelectedProject(project)
         const target = forArticle ? 'articles' : 'issues'
-        void fetchSection<AttachmentWrapper>(`${target}?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}+attachments:*.svg`, 0, 1).then(a => {
+        void fetchSection<AttachmentWrapper>(`${target}?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(project.name)}${attachmentQuery}`, 0, 1).then(a => {
             if (a.length === 0) host.alert(forArticle ? t('alert_noArticlesWithAttachments') : t('alert_noIssuesWithAttachments'), AlertType.WARNING)
         })
     }, [selectedProject, selectedArticle, selectedAttachment, forArticle])
@@ -190,7 +192,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
     const onLoadMoreArticles = useCallback((onlyWithAttachments: boolean = false) => {
         if (!selectedProject) return;
-        let query = onlyWithAttachments ? `+attachments:*.svg` : ''
+        let query = onlyWithAttachments ? attachmentQuery : ''
         query = query + (filterText !== '' ? `+*${filterText}*` : '')
 
         void fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, currentSkip, PAGINATION_STEP).then((a: Article[]) => {
@@ -206,7 +208,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     const onFilterArticles = useCallback((text: string, onlyWithAttachments: boolean = false) => {
         if (!selectedProject) return;
         setFilterText(text)
-        let query = onlyWithAttachments ? `+attachments:*.svg` : ''
+        let query = onlyWithAttachments ? attachmentQuery : ''
         query = query + (filterText !== '' ? `+*${filterText}*` : '')
         void fetchSection<Article>(`articles?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, 0, PAGINATION_STEP).then((list: Article[]) => {
             setArticles(list)
@@ -216,7 +218,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
 
     const onLoadMoreIssues = useCallback((onlyWithAttachments: boolean = false) => {
         if (!selectedProject) return;
-        let query = onlyWithAttachments ? `+attachments:*.svg` : ''
+        let query = onlyWithAttachments ? attachmentQuery : ''
         query = query + (filterText !== '' ? `+*${filterText}*` : '')
         void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, currentSkip, PAGINATION_STEP).then((a: Issue[]) => {
             if (a.length === 0) return;
@@ -231,7 +233,7 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     const onFilterIssues = useCallback((text: string, onlyWithAttachments: boolean = false) => {
         if (!selectedProject) return;
         setFilterText(text)
-        let query = onlyWithAttachments ? `+attachments:*.svg` : ''
+        let query = onlyWithAttachments ? attachmentQuery : ''
         query = query + (filterText !== '' ? `+*${filterText}*` : '')
         query = encodeURIComponent(query)
         void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, 0, PAGINATION_STEP).then((list: Issue[]) => {
