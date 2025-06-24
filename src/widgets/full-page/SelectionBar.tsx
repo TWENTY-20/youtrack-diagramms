@@ -233,14 +233,15 @@ export default function SelectionBar({selectedArticle, setSelectedArticle, selec
     const onFilterIssues = useCallback((text: string, onlyWithAttachments: boolean = false) => {
         if (!selectedProject) return;
         setFilterText(text)
-        let query = onlyWithAttachments ? attachmentQuery : ''
-        query = query + (filterText !== '' ? `+*${filterText}*` : '')
-        query = encodeURIComponent(query)
-        void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=project:${escapeProjectName(selectedProject.name)}${query}`, 0, PAGINATION_STEP).then((list: Issue[]) => {
+        let query = filterText !== '' ? `*${encodeURIComponent(filterText)}*` : ''
+        query = query + (onlyWithAttachments ? attachmentQuery : '')
+        console.log(query)
+        void fetchSection<Issue>(`issues?fields=id,summary,idReadable,project(id)&query=${query}+project:${escapeProjectName(selectedProject.name)}`, 0, PAGINATION_STEP).then((list: Issue[]) => {
+            console.log(list)
             setIssues(list)
             setCurrentSkip(PAGINATION_STEP)
         })
-    }, [selectedProject]);
+    }, [selectedProject, filterText]);
 
 
     function escapeProjectName(name: string) {
