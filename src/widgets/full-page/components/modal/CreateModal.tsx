@@ -21,11 +21,11 @@ export default function CreateModal() {
     const {t} = useTranslation();
 
     const {action: {show}, closeModal} = useModalContext()
-    const {project, target, issue, article, setArticle, setIssue, setAttachment, setProjectAndReset, setTargetAndReset} = useFilterContext()
+    const {project, target, issue, article, setAttachment, setProjectAndReset, setTargetAndReset, setIssueAndReset, setArticleAndReset} = useFilterContext()
 
     const {projects, projectsLoading, fetchNextProjects, onSearchChange: onProjectSearch} = useProjects()
-    const {articles, articlesLoading, fetchNextArticles, onFilterChange: onArticleFilter} = useArticles()
-    const {issues, issuesLoading, fetchNextIssues, onFilterChange: onIssueFilter} = useIssues()
+    const {articles, articlesLoading, fetchNextArticles, onFilterChange: onArticleFilter} = useArticles(false)
+    const {issues, issuesLoading, fetchNextIssues, onFilterChange: onIssueFilter} = useIssues(false)
 
     const [diagramName, setDiagramName] = useState<string | undefined>(undefined)
 
@@ -97,7 +97,7 @@ export default function CreateModal() {
                         loading={articlesLoading}
                         data={articles?.map(articleToSelectItem)}
                         onLoadMore={() => void fetchNextArticles()}
-                        onSelect={(item) => item && setArticle(item.model)}
+                        onSelect={(item) => item && setArticleAndReset(item.model)}
                         onFilter={(text) => onArticleFilter({project: project, search: text})}
                         renderOptimization={false}
                         disabled={project === undefined}
@@ -116,7 +116,7 @@ export default function CreateModal() {
                         onLoadMore={() => void fetchNextIssues()}
                         notFoundMessage={t('noIssuesFound')}
                         data={issues?.map(issueToSelectItem)}
-                        onSelect={(item) => item && setIssue(item.model)}
+                        onSelect={(item) => item && setIssueAndReset(item.model)}
                         onFilter={(text) => onIssueFilter({project: project, search: text})}
                         disabled={project === undefined}
                     />

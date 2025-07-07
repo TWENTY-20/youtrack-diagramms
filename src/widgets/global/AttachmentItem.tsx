@@ -2,10 +2,10 @@ import Tag from "@jetbrains/ring-ui-built/components/tag/tag";
 import ClickableLink from "@jetbrains/ring-ui-built/components/link/clickableLink";
 import Icon from "@jetbrains/ring-ui-built/components/icon";
 import Pencil from "@jetbrains/icons/pencil";
-import {Attachment, IssueAttachment} from "../full-page/entities/youtrack.ts";
+import {Attachment} from "../full-page/entities/youtrack.ts";
 import {useState} from "react";
 
-export default function AttachmentItem({attachment, onSelectAttachment}: { attachment: Attachment, onSelectAttachment: (attachment: IssueAttachment) => void }) {
+export default function AttachmentItem({attachment, onSelectAttachment}: { attachment: Attachment, onSelectAttachment: (attachment: Attachment) => void }) {
 
     const [hovering, setHovering] = useState(false)
 

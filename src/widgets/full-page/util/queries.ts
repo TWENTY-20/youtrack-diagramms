@@ -11,7 +11,7 @@ export const SVG_QUERY = 'attachments:*.svg'
 export function generateFilterQuery(filter: Filter) {
     let query = ''
     if (filter.search) {
-        query += `+summary:{*${encodeURIComponent(filter.search)}*}`
+        query += `+summary:{${encodeURIComponent(filter.search)}}`
     }
     if (filter.project) {
         query += `+project:{${encodeURIComponent(filter.project.name)}}`

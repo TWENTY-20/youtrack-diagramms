@@ -32,7 +32,22 @@ export default function SelectionBar() {
 
 
     const {t} = useTranslation();
-    const {project, setProject, issue, setIssue, setArticle, article, setAttachment, attachment, target, setTarget, setProjectAndReset, setTargetAndReset} = useFilterContext()
+    const {
+        project,
+        setProject,
+        issue,
+        setIssue,
+        setArticle,
+        article,
+        setAttachment,
+        attachment,
+        target,
+        setTarget,
+        setProjectAndReset,
+        setTargetAndReset,
+        setArticleAndReset,
+        setIssueAndReset
+    } = useFilterContext()
 
     const {projects, projectsLoading, fetchNextProjects, onSearchChange: onProjectSearch} = useProjects()
     const {issues, issuesLoading, fetchNextIssues, onFilterChange: onIssuefilter} = useIssues(false)
@@ -48,6 +63,7 @@ export default function SelectionBar() {
     }, [issue, article, target])
 
     const onSelectProject = useCallback((project: Project) => {
+        console.log('selct project')
         setProjectAndReset(project)
         if (target === Target.ARTICLE) {
             onArticleFilter({project: project, onlySvgAttachments: true})
@@ -127,8 +143,8 @@ export default function SelectionBar() {
                                 loading={articlesLoading}
                                 onLoadMore={() => void fetchNextArticles()}
                                 data={articles?.map(articleToSelectItem)}
-                                onSelect={(item) => item && setArticle(item.model)}
-                                onFilter={(text) => onArticleFilter({project: project, search: text})}
+                                onSelect={(item) => item && setArticleAndReset(item.model)}
+                                onFilter={(text) => onArticleFilter({project: project, search: text, onlySvgAttachments: true})}
                                 renderOptimization={false}
                             >
                             </Select>
@@ -143,8 +159,8 @@ export default function SelectionBar() {
                                 loading={issuesLoading}
                                 onLoadMore={() => void fetchNextIssues()}
                                 data={issues?.map(issueToSelectItem)}
-                                onSelect={(item) => item && setIssue(item.model)}
-                                onFilter={(text) => onIssuefilter({project: project, search: text})}
+                                onSelect={(item) => item && setIssueAndReset(item.model)}
+                                onFilter={(text) => onIssuefilter({project: project, search: text, onlySvgAttachments: true})}
                                 renderOptimization={false}
 
                             >

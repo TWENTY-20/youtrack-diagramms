@@ -17,6 +17,8 @@ interface FilterContextProviderProps {
     setAttachment: (attachment: Attachment | undefined) => void
     setProjectAndReset: (project: Project | undefined) => void
     setTargetAndReset: (target: Target) => void
+    setIssueAndReset: (issue: Issue | undefined) => void
+    setArticleAndReset: (article: Article | undefined) => void
 }
 
 export default function FilterContextProvider({children}: { children: ReactNode }) {
@@ -30,12 +32,25 @@ export default function FilterContextProvider({children}: { children: ReactNode 
         setProject(project)
         setArticle(undefined)
         setIssue(undefined)
+        setAttachment(undefined)
     }
 
     function setTargetAndReset(target: Target) {
         setTarget(target)
         setProject(undefined)
         setArticle(undefined)
+        setIssue(undefined)
+        setAttachment(undefined)
+    }
+
+    function setIssueAndReset(issue: Issue | undefined) {
+        setIssue(issue)
+        setArticle(undefined)
+        setAttachment(undefined)
+    }
+
+    function setArticleAndReset(article: Article | undefined) {
+        setArticle(article)
         setIssue(undefined)
         setAttachment(undefined)
     }
@@ -54,7 +69,9 @@ export default function FilterContextProvider({children}: { children: ReactNode 
             setIssue,
             setAttachment,
             setProjectAndReset,
-            setTargetAndReset
+            setTargetAndReset,
+            setArticleAndReset,
+            setIssueAndReset
         }}>
             {children}
         </FilterContext.Provider>

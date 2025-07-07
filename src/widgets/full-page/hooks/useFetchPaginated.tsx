@@ -15,6 +15,7 @@ export default function useFetchPaginated<T>(url: string, query: string = '', pa
             return
         }
         setLoading(true)
+        console.log('next page', url , contentQuery , paginationQuery)
         await host.fetchYouTrack(url + contentQuery + paginationQuery).then((items: T[]) => {
             if (items.length < pageSize) setHasNextPage(false)
             setPages(prev => [...prev, items])
@@ -27,6 +28,7 @@ export default function useFetchPaginated<T>(url: string, query: string = '', pa
     const init = useCallback(async (query: string = '') => {
         setContentQuery(query)
         setLoading(true)
+        console.log('init', url , query , paginationQuery)
         await host.fetchYouTrack(url + query + `&$skip=0&$top=${pageSize}`).then((items: T[]) => {
             if (items.length < pageSize) setHasNextPage(false)
             setPages([items])
