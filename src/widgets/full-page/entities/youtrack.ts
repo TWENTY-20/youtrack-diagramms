@@ -7,18 +7,24 @@ export interface Project extends BaseEntity {
     archived?: boolean
 }
 
-export interface AttachmentWrapper extends BaseEntity {
+/*export interface AttachmentWrapper extends BaseEntity {
     summary: string
     idReadable: string
     project?: Project
+}*/
+
+export interface Article extends BaseEntity {
+    summary: string
+    idReadable: string
+    project?: Project
+    attachments: Attachment[]
 }
 
-export interface Article extends AttachmentWrapper {
-    attachments: ArticleAttachment[]
-}
-
-export interface Issue extends AttachmentWrapper {
-    attachments: IssueAttachment[]
+export interface Issue extends BaseEntity {
+    summary: string
+    idReadable: string
+    project?: Project
+    attachments: Attachment[]
 }
 
 export interface Attachment {

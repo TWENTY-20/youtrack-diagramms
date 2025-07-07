@@ -36,5 +36,6 @@
   "alert_diagramm_error": "Es ist ein Fehler aufgetreten. Das Diagramm wurde nicht gespeichert.",
   "alert_noArticlesWithAttachments": "In diesem Projekt gibt es keine Artikel mit Diagrammen.",
   "alert_noIssuesWithAttachments": "In diesem Projekt gibt es keine Tickets mit Diagrammen.",
-  "tooltip_selectionBar": "In dieser Auswahl werden nur Artikel/Tickets angezeigt, die Diagramme enthalten."
+  "tooltip_selectionBar": "In dieser Auswahl werden nur Artikel/Tickets angezeigt, die Diagramme enthalten.",
+  "confirm": "Bestätigen"
 }

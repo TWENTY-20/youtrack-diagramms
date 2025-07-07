@@ -1,4 +1,5 @@
-import {host} from "./youTrackApp.ts";
+import {host} from "../youTrackApp.ts";
+import {Article, Attachment, Issue, Project} from "../entities/youtrack.ts";
 
 async function fetchAll<T>(path: string): Promise<T[]> {
     const result: T[] = []
@@ -37,5 +38,16 @@ async function fetchSection<T>(path: string, skip: number = 0, top: number = 50)
     const pager = `&$skip=${skip}&$top=${top}`
     return await host.fetchYouTrack(path + pager) as Promise<T[]>
 }
+
+export const projectToSelectItem = (it: Project) => ({key: it.id, label: it.name, avatar: it.iconUrl, model: it});
+export const articleToSelectItem = (it: Article) => ({key: it.id, label: it.summary, model: it});
+export const issueToSelectItem = (it: Issue) => ({key: it.id, label: it.summary, model: it});
+export const attachmentToSelectItem = (it: Attachment) => ({key: it.id, label: it.name, model: it});
+
+export const nullableProjectToSelectItem = (it: Project | undefined) => (it === undefined ? undefined : projectToSelectItem(it));
+export const nullableArticleToSelectItem = (it: Article | undefined) => (it === undefined ? undefined : articleToSelectItem(it));
+export const nullableIssueToSelectItem = (it: Issue | undefined) => (it === undefined ? undefined : issueToSelectItem(it));
+export const nullableAttachmentToSelectItem = (it: Attachment | undefined) => (it === undefined ? undefined : attachmentToSelectItem(it));
+
 
 export {fetchAll, fetchPaginated, fetchSection}

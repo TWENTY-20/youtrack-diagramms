@@ -37,5 +37,6 @@
   "alert_diagramm_error": "An error has occurred. The diagramm was not saved.",
   "alert_noArticlesWithAttachments": "In this project are not articles with diagrams",
   "alert_noIssuesWithAttachments": "In this project are not issues with diagrams",
-  "tooltip_selectionBar": "Only articles/tickets that contain diagrams are displayed in this selection."
+  "tooltip_selectionBar": "Only articles/tickets that contain diagrams are displayed in this selection.",
+  "confirm": "Confirm"
 }

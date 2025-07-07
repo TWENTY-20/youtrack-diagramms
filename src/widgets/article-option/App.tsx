@@ -1,48 +1,40 @@
 import {useTranslation} from "react-i18next";
 import {useCallback, useEffect, useState} from "react";
 import YTApp from "./youTrackApp.ts";
-import {ArticleAttachment} from "../full-page/entities.ts";
+import {Article, Attachment} from "../full-page/entities/youtrack.ts";
 import {host} from "../full-page/youTrackApp.ts";
 import Button from "@jetbrains/ring-ui-built/components/button/button";
 import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/controls-height";
 import LoaderScreen from "@jetbrains/ring-ui-built/components/loader-screen/loader-screen";
-import AttachmentItem from "./AttachmentItem.tsx";
-import {fetchAll} from "../full-page/util.ts";
+import {fetchArticle} from "../full-page/util/queries.ts";
+import AttachmentItem from "../global/AttachmentItem.tsx";
 
 
 export default function App() {
     const {t} = useTranslation()
 
-    const [attachments, setAttachments] = useState<ArticleAttachment[]>([])
+    const [attachments, setAttachments] = useState<Attachment[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
 
     useEffect(() => {
-        void fetchAll<ArticleAttachment>(`articles/${YTApp.entity.id}/attachments?fields=id,name,extension,base64Content,article,size`).then((attachments: ArticleAttachment[]) => {
-            attachments = attachments.filter(i => extractMediaType(i.base64Content) === 'image/svg+xml')
-            setAttachments(attachments)
+        void fetchArticle(YTApp.entity.id).then((article: Article | undefined) => {
+            if (article) {
+                setAttachments(article.attachments.filter(i => i.mimeType === 'image/svg+xml'))
+            }else{
+                console.error("Article not found")
+            }
             setIsLoading(false)
         })
     }, []);
 
-    const onSelectAttachment = useCallback(async (attachment: ArticleAttachment | null) => {
+    const onSelectAttachment = useCallback(async (attachment: Attachment | null) => {
         await cacheAttachment(attachment)
         window.open(`/app/diagramm-editor/editor`, '_blank')
         window.parent.location.href = `/articles/${YTApp.entity.id}`
     }, [])
 
-
-    function extractMediaType(base64Content: string): string | null {
-        const regex = /^data:(.+?);base64,/;
-        const match = base64Content.match(regex);
-        if (match) {
-            return match[1];
-        } else {
-            return null
-        }
-    }
-
-    async function cacheAttachment(attachment: ArticleAttachment | null) {
+    async function cacheAttachment(attachment: Attachment | null) {
         const body = {
             id: YTApp.entity.id,
             attachmentId: attachment?.id ?? 'new',
@@ -65,7 +57,7 @@ export default function App() {
                     </div>
                     :
                     attachments.length > 0 ?
-                        attachments.map((it: ArticleAttachment, index) =>
+                        attachments.map((it: Attachment, index) =>
                             // eslint-disable-next-line @typescript-eslint/no-misused-promises
                             <AttachmentItem key={index} attachment={it} onSelectAttachment={async (it) => await onSelectAttachment(it)}/>
                         )
