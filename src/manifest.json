@@ -30,7 +30,7 @@
     },
     {
       "key": "editor",
-      "name": "Diagrams",
+      "name": "Diagram Editor",
       "indexPath": "full-page/index.html",
       "extensionPoint": "MAIN_MENU_ITEM"
     }
