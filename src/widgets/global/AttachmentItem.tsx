@@ -9,13 +9,12 @@ export default function AttachmentItem({attachment, onSelectAttachment}: { attac
 
     const [hovering, setHovering] = useState(false)
 
-    function formatBytes(bytes: number | undefined) {
+    function formatBytes(bytes: number | undefined): string {
         if (bytes === undefined) return ''
-        if (bytes / 1000 < 1) return `${bytes} Bytes`
-        if (bytes / 1000000 < 1) return `${Math.round(bytes / 1000)} MB`
-        return `${Math.round(bytes / 1000000)} GB`
-
-
+        if (bytes < 1000) return `${bytes} Bytes`
+        if (bytes < 1_000_000) return `${Math.round(bytes / 1000)} KB`
+        if (bytes < 1_000_000_000) return `${Math.round(bytes / 1_000_000)} MB`
+        return `${Math.round(bytes / 1_000_000_000)} GB`
     }
 
     return (
