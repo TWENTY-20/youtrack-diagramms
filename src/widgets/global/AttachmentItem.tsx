@@ -20,7 +20,7 @@ export default function AttachmentItem({attachment, onSelectAttachment}: { attac
     return (
         <div className={"flex flex-row justify-between attachmentItem"} onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
             <span>
-            <Tag className={"font-bold text-white badge mr-2"} readOnly>SVG</Tag>
+            <Tag className={"font-bold badge"} readOnly>SVG</Tag>
                 {attachment.name}
             </span>
             {hovering ?

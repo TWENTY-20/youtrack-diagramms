@@ -108,7 +108,7 @@ export default function SelectionBar() {
         <div className={"flex flex-col p-2 pb-6"}>
             <div style={{height: "65px"}} className={"flex flex-row justify-between items-end"}>
                 <div className={"flex flex-col"}>
-                    <div className={"flex flex-row pb-3 space-x-2"}>
+                    <div className={"flex flex-row pb-3 gap-x-2"}>
                         <h1 style={{fontSize: "16px", fontWeight: "bold"}}> {t('attachTo')}</h1>
                         <Button onClick={() => setTargetAndReset(Target.ARTICLE)} active={target === Target.ARTICLE} height={ControlsHeight.S}>{t('article')}</Button>
                         <h1 style={{fontSize: "16px", fontWeight: "bold"}}> {t('or')}</h1>

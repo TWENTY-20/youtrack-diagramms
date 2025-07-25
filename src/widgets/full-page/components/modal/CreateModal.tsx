@@ -60,7 +60,7 @@ export default function CreateModal() {
             onCloseAttempt={closeModal}
         >
             <div className={"flex flex-col p-5 "}>
-                <div className={"flex flex-row space-x-2 align-middle"}>
+                <div className={"flex flex-row gap-x-2 align-middle"}>
                     <h1 style={{fontSize: "16px", fontWeight: "bold"}}> {t('attachTo')}</h1>
                     <Button onClick={() => setTargetAndReset(Target.ARTICLE)} active={target === Target.ARTICLE} height={ControlsHeight.S}>{t('article')}</Button>
                     <h1 style={{fontSize: "16px", fontWeight: "bold"}}> {t('or')}</h1>
@@ -132,13 +132,14 @@ export default function CreateModal() {
                     disabled={issue === undefined && article === undefined}
                 />
 
-                <div className={"flex flex-row justify-end pt-4"}>
+                <div className={"flex flex-row justify-end pt-4 gap-x-2"}>
                     <Button height={ControlsHeight.S} onClick={() => {
                         closeModal()
                         setDiagramName(undefined)
                     }}> {t('cancel')}</Button>
-                    <Button height={ControlsHeight.S} onClick={() => onAddNewDiagramm()} className={"ms-2"}
-                            style={{backgroundColor: 'var(--ring-main-color)', color: 'white'}}> {t('add')}</Button>
+                    <Button height={ControlsHeight.S} onClick={() => onAddNewDiagramm()} style={{backgroundColor: 'var(--ring-main-color)', color: 'white'}}>
+                        {t('add')}
+                    </Button>
                 </div>
             </div>
         </Dialog>
