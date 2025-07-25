@@ -69,7 +69,7 @@ export default function CreateModal() {
 
                 <Select
                     className={"pt-2 forceFullWidth"}
-                    popupClassName={"remove-input-focus"}
+                    popupClassName={"remove-input-focus select-max-width"}
                     selectedLabel={t('project')}
                     label={t('selectProject')}
                     filter={{placeholder: t("filterProjects")}}
@@ -87,7 +87,7 @@ export default function CreateModal() {
                 {target === Target.ARTICLE ?
                     <Select
                         className={"pt-2 forceFullWidth"}
-                        popupClassName={"remove-input-focus"}
+                        popupClassName={"remove-input-focus select-max-width"}
                         label={t('selectArticle')}
                         selectedLabel={t('article')}
                         filter={{placeholder: t("filterArticles")}}
@@ -106,7 +106,7 @@ export default function CreateModal() {
                     :
                     <Select
                         className={"pt-2 forceFullWidth"}
-                        popupClassName={"remove-input-focus"}
+                        popupClassName={"remove-input-focus select-max-width"}
                         selectedLabel={t('issue')}
                         selected={nullableIssueToSelectItem(issue)}
                         label={t('selectIssue')}
@@ -119,6 +119,7 @@ export default function CreateModal() {
                         onSelect={(item) => item && setIssueAndReset(item.model)}
                         onFilter={(text) => onIssueFilter({project: project, search: text})}
                         disabled={project === undefined}
+                        renderOptimization={false}
                     />
                 }
 

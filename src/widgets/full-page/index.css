@@ -51,6 +51,10 @@ body.plugin {
     outline: none !important;
 }
 
+.select-max-width{
+    max-width: 500px;
+}
+
 .forceFullWidth {
     width: 100% !important;
 }

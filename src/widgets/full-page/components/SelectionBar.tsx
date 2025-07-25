@@ -117,7 +117,7 @@ export default function SelectionBar() {
 
                     <div className={"flex flex-row"}>
                         <Select
-                            popupClassName={"remove-input-focus"}
+                            popupClassName={"remove-input-focus select-max-width"}
                             label={t('selectProject')}
                             filter={{placeholder: t("filterProjects")}}
                             loadingMessage={t('loading')}
@@ -134,7 +134,7 @@ export default function SelectionBar() {
                         <p className={"px-2 align-middle"} style={{fontSize: '14pt', color: 'var(--ring-secondary-color)'}}>/</p>
                         {target === Target.ARTICLE ?
                             <Select
-                                popupClassName={"remove-input-focus"}
+                                popupClassName={"remove-input-focus select-max-width"}
                                 label={t('selectArticle')}
                                 filter={{placeholder: t("filterArticles")}}
                                 loadingMessage={t('loading')}
@@ -150,7 +150,7 @@ export default function SelectionBar() {
                             </Select>
                             :
                             <Select
-                                popupClassName={"remove-input-focus"}
+                                popupClassName={"remove-input-focus select-max-width"}
                                 label={t('selectIssue')}
                                 filter={{placeholder: t("filterIssues")}}
                                 loadingMessage={t('loading')}
