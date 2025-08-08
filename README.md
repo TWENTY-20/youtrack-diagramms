@@ -1,4 +1,4 @@
-# <img src="/src/logo.png" alt="" width="35" />  YouTrack Diagrams Editor
+# <img src="/src/logo.svg" alt="" width="35" />  YouTrack Diagrams Editor
 
 Once installed into [JetBrains YouTrack](https://www.jetbrains.com/youtrack/), this App provides a Drawio-Editor for editing diagrams.
 
