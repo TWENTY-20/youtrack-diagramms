@@ -63,7 +63,6 @@ export default function SelectionBar() {
     }, [issue, article, target])
 
     const onSelectProject = useCallback((project: Project) => {
-        console.log('selct project')
         setProjectAndReset(project)
         if (target === Target.ARTICLE) {
             onArticleFilter({project: project, onlySvgAttachments: true})

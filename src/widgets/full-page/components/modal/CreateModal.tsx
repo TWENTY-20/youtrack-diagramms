@@ -53,7 +53,6 @@ export default function CreateModal() {
     }, [onArticleFilter, onIssueFilter, target])
 
     useEffect(() => {
-        console.log('show modal', show, project)
         if (show && project !== undefined) {
             loadTargetData(project)
         }
@@ -107,7 +106,9 @@ export default function CreateModal() {
                         notFoundMessage={t('noArticlesFound')}
                         loading={articlesLoading}
                         data={articles?.map(articleToSelectItem)}
-                        onLoadMore={() => void fetchNextArticles()}
+                        onLoadMore={() => {
+                            void fetchNextArticles()
+                        }}
                         onSelect={(item) => item && setArticleAndReset(item.model)}
                         onFilter={(text) => onArticleFilter({project: project, search: text})}
                         disabled={project === undefined}
@@ -123,7 +124,9 @@ export default function CreateModal() {
                         filter={{placeholder: t("filterIssues")}}
                         loading={issuesLoading}
                         loadingMessage={t('loading')}
-                        onLoadMore={() => void fetchNextIssues()}
+                        onLoadMore={() => {
+                            void fetchNextIssues()
+                        }}
                         notFoundMessage={t('noIssuesFound')}
                         data={issues?.map(issueToSelectItem)}
                         onSelect={(item) => item && setIssueAndReset(item.model)}
