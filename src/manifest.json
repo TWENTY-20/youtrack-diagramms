@@ -4,7 +4,7 @@
   "title": "Diagram Editor",
   "description": "Create and edit Diagrams in Youtrack",
   "changeNotes": "See https://plugins.jetbrains.com/plugin/25787-diagramm-editor/release-notes",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "icon": "logo.svg",
   "minYouTrackVersion": "2024.3.0",
   "widgets": [
