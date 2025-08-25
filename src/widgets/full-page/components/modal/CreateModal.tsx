@@ -10,7 +10,7 @@ import {articleToSelectItem, issueToSelectItem, nullableArticleToSelectItem, nul
 import useProjects from "../../hooks/useProjects.tsx";
 import useArticles from "../../hooks/useArticles.tsx";
 import useIssues from "../../hooks/useIssues.tsx";
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import Input from "@jetbrains/ring-ui-built/components/input/input";
 import {host} from "../../youTrackApp.ts";
 import {Project} from "../../entities/youtrack.ts";
@@ -44,14 +44,20 @@ export default function CreateModal() {
         }
     }, [diagramName, project, article, issue, target])
 
-    const onSelectProject = useCallback((project: Project) => {
-        setProjectAndReset(project)
+    const loadTargetData = useCallback((project: Project) => {
         if (target === Target.ARTICLE) {
             onArticleFilter({project: project})
         } else {
             onIssueFilter({project: project})
         }
-    }, [setProjectAndReset, onArticleFilter, onIssueFilter, target])
+    }, [onArticleFilter, onIssueFilter, target])
+
+    useEffect(() => {
+        console.log('show modal', show, project)
+        if (show && project !== undefined) {
+            loadTargetData(project)
+        }
+    }, [show, project]);
 
 
     return (
@@ -78,7 +84,12 @@ export default function CreateModal() {
                     selected={nullableProjectToSelectItem(project)}
                     loading={projectsLoading}
                     data={projects?.map(projectToSelectItem)}
-                    onSelect={(item) => item && onSelectProject(item.model)}
+                    onSelect={(item) => {
+                        if (item) {
+                            setProjectAndReset(item.model)
+                            loadTargetData(item.model)
+                        }
+                    }}
                     onLoadMore={() => void fetchNextProjects()}
                     onFilter={(text) => onProjectSearch(text)}
                     renderOptimization={false}
@@ -99,9 +110,8 @@ export default function CreateModal() {
                         onLoadMore={() => void fetchNextArticles()}
                         onSelect={(item) => item && setArticleAndReset(item.model)}
                         onFilter={(text) => onArticleFilter({project: project, search: text})}
-                        renderOptimization={false}
                         disabled={project === undefined}
-
+                        renderOptimization={false}
                     />
                     :
                     <Select
