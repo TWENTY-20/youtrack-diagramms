@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/youtrack-app.json",
   "name": "diagramm-editor",
   "title": "Diagram Editor",
-  "description": "Create and edit Diagrams in Youtrack",
+  "description": "Create and edit Diagrams in YouTrack",
   "changeNotes": "See https://plugins.jetbrains.com/plugin/25787-diagramm-editor/release-notes",
   "version": "2.0.2",
   "icon": "logo.svg",
