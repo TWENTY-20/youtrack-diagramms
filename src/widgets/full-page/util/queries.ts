@@ -2,7 +2,8 @@ import {Filter} from "../entities/util.ts";
 import {Attachment, Issue} from "../entities/youtrack.ts";
 import {host} from "../youTrackApp.ts";
 
-export const ATTACHMENT_FIELDS = "id,name,extension,base64Content,mimeType,size"
+export const ATTACHMENT_FIELDS = "id,name,extension,mimeType,size"
+export const ATTACHMENT_CONTENT_FIELDS = "id,name,extension,base64Content,mimeType,size"
 export const PROJECT_FIELDS = "id,name,iconUrl,archived"
 export const ISSUE_FIELDS = `id,summary,idReadable,project(${PROJECT_FIELDS}),attachments(${ATTACHMENT_FIELDS})`
 export const ARTICLE_FIELDS = `id,summary,idReadable,project(${PROJECT_FIELDS}),attachments(${ATTACHMENT_FIELDS})`

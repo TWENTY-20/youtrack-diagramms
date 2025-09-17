@@ -37,5 +37,6 @@
   "alert_noArticlesWithAttachments": "In diesem Projekt gibt es keine Artikel mit Diagrammen.",
   "alert_noIssuesWithAttachments": "In diesem Projekt gibt es keine Tickets mit Diagrammen.",
   "tooltip_selectionBar": "In dieser Auswahl werden nur Artikel/Tickets angezeigt, die Diagramme enthalten.",
-  "confirm": "Bestätigen"
+  "confirm": "Bestätigen",
+  "contentLoadingError": "Der Inhalt des Anhangs konnte nicht geladen werden. Wähle den Anhang erneut aus."
 }

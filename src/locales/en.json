@@ -38,5 +38,6 @@
   "alert_noArticlesWithAttachments": "In this project are not articles with diagrams",
   "alert_noIssuesWithAttachments": "In this project are not issues with diagrams",
   "tooltip_selectionBar": "Only articles/tickets that contain diagrams are displayed in this selection.",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "contentLoadingError": "The content could not be loaded. Please select the attachment again."
 }

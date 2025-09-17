@@ -1,6 +1,7 @@
 import {host} from "../youTrackApp.ts";
+
 import {useTranslation} from "react-i18next";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect} from "react";
 import {EventData} from "../entities/types.ts";
 import {AlertType} from "@jetbrains/ring-ui-built/components/alert/alert";
 import {DrawIoEmbed} from "react-drawio";
@@ -8,15 +9,15 @@ import {useFilterContext} from "../context/FilterContextProvider.tsx";
 import {Target} from "../entities/util.ts";
 import {saveDiagramm} from "../util/queries.ts";
 import {useConfirmContext} from "../context/ConfirmContextProvider.tsx";
-
+import {useAttachmentContent} from "../hooks/useAttachmentContent.tsx";
 
 export default function DiagrammEditor() {
 
     const {t} = useTranslation();
-    const [xml, setXml] = useState<string>("")
 
     const {target, article, issue, attachment} = useFilterContext()
     const {confirm, close} = useConfirmContext()
+    const {content} = useAttachmentContent()
 
     useEffect(() => {
         window.addEventListener('message', onEvent)
@@ -24,11 +25,6 @@ export default function DiagrammEditor() {
             window.removeEventListener('message', onEvent);
         };
     }, [attachment]);
-
-    useEffect(() => {
-        setXml(attachment?.base64Content ?? "")
-    }, [attachment]);
-
 
     const onSaveDiagramm = useCallback(async (data: string) => {
         let id: string | undefined = undefined
@@ -106,13 +102,15 @@ export default function DiagrammEditor() {
         }
     }, [onSaveDiagramm, onLeavePage, attachment, issue, article, target])
 
+    //if (attachmentLoading) return <LoaderScreen/>
+
 
     return (
         <div className={"w-full h-full relative"}>
             <div id={"editor"} className={"w-full h-full"}>
                 <DrawIoEmbed
                     key={'drawio_embedded'}
-                    xml={xml}
+                    xml={content}
                     urlParameters={{
                         ui: 'kennedy',
                         spin: true,
