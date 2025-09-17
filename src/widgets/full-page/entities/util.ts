@@ -8,6 +8,7 @@ export enum Target {
 export interface ModalAction {
     show: boolean
     callback?: () => void
+    mode: ModalMode
 }
 
 export interface Filter {
@@ -20,4 +21,9 @@ export interface ConfirmAction {
     message: string
     description?: string
     onConfirm: () => void
+}
+
+export enum ModalMode{
+    OPEN,
+    CREATE
 }

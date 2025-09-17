@@ -49,7 +49,7 @@ body.plugin {
     outline: none !important;
 }
 
-.select-max-width{
+.select-max-width {
     max-width: 500px;
 }
 
@@ -63,4 +63,34 @@ body.plugin {
 
 .infoIcon:hover {
     color: #d671b3;
+}
+
+.iconButton {
+    padding-inline: calc(var(--ring-unit) * 1) !important;
+}
+
+.select-group-left {
+    border-bottom-right-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.select-group-right {
+    border-bottom-left-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+}
+
+.select-group-middle {
+    border-radius: 0 !important;
+}
+
+.select-primary {
+    background-color: var(--ring-button-primary-background-color) !important;
+    color: white;
+    border: none !important;
+    --ring-disabled-color: var(--ring-secondary-color) !important;
+}
+.avatar{
+    height: 20px;
+    width: 20px;
+    border-radius: var(--ring-border-radius);
 }

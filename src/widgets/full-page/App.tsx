@@ -16,15 +16,13 @@ export default function App() {
     }, []);
 
     return (
-        <div style={{position: 'relative'}}>
+        <div className={'ps-4 relative'}>
             <FilterContextProvider>
                 <ConfirmContextProvider>
                     <ModalContextProvider>
                         <SelectionBar key={'selection_bar'}/>
                         <div className={"drawIo"}>
-                            <DiagrammEditor
-                                key={'diagramm_editor'}
-                            />
+                            <DiagrammEditor key={'diagramm_editor'}/>
                         </div>
                         <ConfirmModal/>
                         <CreateModal/>

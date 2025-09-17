@@ -25,6 +25,7 @@
   "alert_select_items_issue": "Wähle ein Projekt, ein Ticket und einen Diagrammnamen",
   "alert_diagramm_saved": "Diagramm gespeichert",
   "open": "Öffnen",
+  "create": "Erstellen",
   "or": "oder",
   "attachTo": "Anhängen an",
   "leavePageQ": "Wollen Sie wirklich die Seite verlassen?",
@@ -38,5 +39,7 @@
   "alert_noIssuesWithAttachments": "In diesem Projekt gibt es keine Tickets mit Diagrammen.",
   "tooltip_selectionBar": "In dieser Auswahl werden nur Artikel/Tickets angezeigt, die Diagramme enthalten.",
   "confirm": "Bestätigen",
-  "contentLoadingError": "Der Inhalt des Anhangs konnte nicht geladen werden. Wähle den Anhang erneut aus."
+  "contentLoadingError": "Der Inhalt des Anhangs konnte nicht geladen werden. Wähle den Anhang erneut aus.",
+  "location": "Speicherort",
+  "openDiagram" : "Diagramm öffnen"
 }

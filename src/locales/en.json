@@ -26,6 +26,7 @@
   "alert_select_items_issue": "Select a project, an issue and provide a diagram name",
   "alert_diagramm_saved": "Diagram saved",
   "open": "Open",
+  "create": "Create",
   "or": "or",
   "attachTo": "Attach to",
   "leavePageQ": "Do you really want to leave this Page?",
@@ -39,5 +40,7 @@
   "alert_noIssuesWithAttachments": "In this project are not issues with diagrams",
   "tooltip_selectionBar": "Only articles/tickets that contain diagrams are displayed in this selection.",
   "confirm": "Confirm",
-  "contentLoadingError": "The content could not be loaded. Please select the attachment again."
+  "contentLoadingError": "The content could not be loaded. Please select the attachment again.",
+  "location": "Location",
+  "openDiagram" : "Open diagram"
 }
