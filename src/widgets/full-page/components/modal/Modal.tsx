@@ -27,9 +27,11 @@ import ButtonGroup from "@jetbrains/ring-ui-built/components/button-group/button
 import ClickableLink from "@jetbrains/ring-ui-built/components/link/clickableLink";
 import Icon from "@jetbrains/ring-ui-built/components/icon";
 import Close from "@jetbrains/icons/close";
+import Info from "@jetbrains/icons/info";
+import Tooltip from "@jetbrains/ring-ui-built/components/tooltip/tooltip";
 
 
-export default function CreateModal() {
+export default function Modal() {
 
     const {t} = useTranslation();
 
@@ -97,7 +99,14 @@ export default function CreateModal() {
                     </ClickableLink>
                 </div>
                 <div className={"flex flex-col px-8 pb-8 gap-y-5"}>
-                    <h1 className={'text-2xl font-bold'}>{mode === ModalMode.CREATE ? t('newDiagramm') : t('openDiagram')}</h1>
+                    <div className={"flex flex-row gap-x-2"}>
+                        <h1 className={'text-2xl font-bold'}>{mode === ModalMode.CREATE ? t('newDiagramm') : t('openDiagram')}</h1>
+                        {mode === ModalMode.OPEN &&
+                            <Tooltip className={'mt-1'} title={t('tooltip_selectionBar')}>
+                                <Icon glyph={Info} className={'infoIcon'}/>
+                            </Tooltip>
+                        }
+                    </div>
                     <div>
                         <ButtonGroup label={t('location')}>
                             <Button onClick={() => setTargetAndReset(Target.ARTICLE)} active={target === Target.ARTICLE} height={ControlsHeight.S}>{t('article')}</Button>

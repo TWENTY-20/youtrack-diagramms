@@ -5,7 +5,7 @@ import DiagrammEditor from "./components/DiagrammEditor.tsx";
 import ConfirmContextProvider from "./context/ConfirmContextProvider.tsx";
 import ModalContextProvider from "./context/ModalContextProvider.tsx";
 import ConfirmModal from "./components/modal/ConfirmModal.tsx";
-import CreateModal from "./components/modal/CreateModal.tsx";
+import Modal from "./components/modal/Modal.tsx";
 import {useAutoSaveSetting} from "./hooks/useAutoSaveSetting.tsx";
 import LoaderScreen from "@jetbrains/ring-ui-built/components/loader-screen/loader-screen";
 
@@ -36,7 +36,7 @@ export default function App() {
                             </>
                         }
                         <ConfirmModal/>
-                        <CreateModal/>
+                        <Modal/>
                     </ModalContextProvider>
                 </ConfirmContextProvider>
             </FilterContextProvider>
