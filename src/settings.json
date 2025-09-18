@@ -7,8 +7,8 @@
     "autoSave": {
       "title": "Enable auto save",
       "type": "boolean",
-      "default": true,
-      "description": "Enable auto save of the diagramm editor"
+      "description": "Enable auto save of the diagramm editor",
+      "x-scope": "GLOBAL"
     }
   },
   "required": ["autoSave"]
