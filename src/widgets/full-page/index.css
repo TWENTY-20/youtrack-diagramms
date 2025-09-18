@@ -90,6 +90,16 @@ body.plugin {
     max-width: 300px;
 }
 
+.ring-select-buttonValue.select-group-middle {
+    padding-left: 12px;
+    padding-right: 27px !important;
+}
+
+.ring-select-buttonValue.select-group-right {
+    padding-left: 12px;
+    padding-right: 27px !important;
+}
+
 .select-primary {
     background-color: var(--ring-button-primary-background-color) !important;
     color: white;
