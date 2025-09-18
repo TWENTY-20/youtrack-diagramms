@@ -43,7 +43,7 @@ async function refetchArticleAttachmentId(articleId: string, attachmentName: str
     const attachmentsList = article.attachments.filter(it => it.name === attachmentName)
     if (attachmentsList.length === 0) return undefined
     if (attachmentsList.length === 1) return attachmentsList[0].id
-    return attachmentsList.sort((a, b) => b.created - a.created)[0].id
+    return attachmentsList.sort((a, b) => b.created! - a.created!)[0].id
 }
 
 

@@ -34,7 +34,7 @@ export interface Attachment {
     base64Content: string
     mimeType: string
     size?: number
-    created: number
+    created?: number
     preventFetchContent?: boolean
 }
 

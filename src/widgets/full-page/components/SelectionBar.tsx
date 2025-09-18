@@ -52,9 +52,9 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
 
     const attachments = useMemo(() => {
         if (target === Target.ARTICLE) {
-            return article ? article.attachments : []
+            return article ? article.attachments.filter(a => a.extension === "svg") : []
         } else {
-            return issue ? issue.attachments : []
+            return issue ? issue.attachments.filter(a => a.extension === "svg") : []
         }
     }, [issue, article, target])
 
