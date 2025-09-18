@@ -1,39 +1,20 @@
-import Tag from "@jetbrains/ring-ui-built/components/tag/tag";
-import ClickableLink from "@jetbrains/ring-ui-built/components/link/clickableLink";
 import Icon from "@jetbrains/ring-ui-built/components/icon";
 import Pencil from "@jetbrains/icons/pencil";
 import {Attachment} from "../full-page/entities/youtrack.ts";
-import {useState} from "react";
+import Text from "@jetbrains/ring-ui-built/components/text/text";
+import Button from "@jetbrains/ring-ui-built/components/button/button";
 
 export default function AttachmentItem({attachment, onSelectAttachment}: { attachment: Attachment, onSelectAttachment: (attachment: Attachment) => void }) {
 
-    const [hovering, setHovering] = useState(false)
-
-    function formatBytes(bytes: number | undefined): string {
-        if (bytes === undefined) return ''
-        if (bytes < 1000) return `${bytes} Bytes`
-        if (bytes < 1_000_000) return `${Math.round(bytes / 1000)} KB`
-        if (bytes < 1_000_000_000) return `${Math.round(bytes / 1_000_000)} MB`
-        return `${Math.round(bytes / 1_000_000_000)} GB`
-    }
-
     return (
-        <div className={"flex flex-row justify-between attachmentItem"} onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
-            <span>
-            <Tag className={"font-bold badge"} readOnly>SVG</Tag>
-                {attachment.name}
-            </span>
-            {hovering ?
-                <ClickableLink className={'pr-2'} onClick={() => onSelectAttachment(attachment)}>
-                    <Icon glyph={Pencil}
-                          className="attachmentIcon"
-                          height={18}
-                          width={18}
-                    />
-                </ClickableLink>
-                :
-                <p style={{color: '9D9FA7'}} className={"ml-1"}>{formatBytes(attachment.size)}</p>
-            }
+        <div className={"flex flex-row justify-between items-center attachmentItem"}>
+            <div className={"flex flex-row gap-x-4 items-center"}>
+                <img src={attachment.thumbnailURL} className={'attachmentIcon'} alt={''}/>
+                <p className={'truncate'} style={{maxWidth: '300px'}}><Text info>{attachment.name}</Text></p>
+            </div>
+            <Button primary className={'iconButton'} onClick={() => onSelectAttachment(attachment)}>
+                <Icon glyph={Pencil}/>
+            </Button>
         </div>
     )
 }

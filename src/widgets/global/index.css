@@ -1,35 +1,27 @@
 @import "tailwindcss";
 
 body.plugin {
-    padding: 0 16px;
     background-color: var(--ring-content-background-color);
     color: var(--ring-text-color);
     font-size: var(--ring-font-size);
 }
 
-.selectAttachment {
-    width: 100%;
-}
-
 .attachmentItem {
-    padding: 5px;
+    padding: calc(var(--ring-unit) * 1) calc(var(--ring-unit) * 2);
     border-radius: var(--ring-border-radius);
-    background-color: transparent;
+    background-color: var(--ring-secondary-background-color);
+    border: 1px solid var(--ring-borders-color);
 }
 
 .attachmentItem:hover {
     background-color: var(--ring-selected-background-color);
 }
 
-.badge {
-    background-color: rgb(184, 210, 228);
-}
-
 .attachmentIcon {
-    color: var(--ring-icon-color);
+    height: 40px;
+    width: 40px;
 }
 
-.attachmentIcon:hover {
-    color:  #d671b3;
+.iconButton {
+    padding-inline: calc(var(--ring-unit) * 1) !important;
 }
-

@@ -36,6 +36,7 @@ export interface Attachment {
     size?: number
     created?: number
     preventFetchContent?: boolean
+    thumbnailURL?: string
 }
 
 export interface ArticleAttachment extends Attachment {
