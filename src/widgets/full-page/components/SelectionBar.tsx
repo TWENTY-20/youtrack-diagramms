@@ -68,7 +68,11 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                     if (a) {
                         setProject(a.project)
                         setArticle(a)
-                        setAttachment(a.attachments.find(i => i.id === res.attachmentId))
+                        const aa = a.attachments.find(i => i.id === res.attachmentId)
+                        if (aa) {
+                            setAttachment(aa)
+                            setShowSelectPath(true)
+                        }
                     } else {
                         console.log("Article not found")
                     }
@@ -77,12 +81,19 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                     if (i) {
                         setProject(i.project)
                         setIssue(i)
-                        setAttachment(i.attachments.find(i => i.id === res.attachmentId))
+                        const ia = i.attachments.find(i => i.id === res.attachmentId)
+                        if (ia) {
+                            setAttachment(ia)
+                            setShowSelectPath(true)
+                        }
                     } else {
                         console.log("Issue not found")
                     }
                 }
-                if (res.attachmentId === 'new') openModal(ModalMode.CREATE)
+                if (res.attachmentId === 'new') openModal(ModalMode.CREATE, () => {
+                    setShowSelectPath(true)
+                    if (autoSave) triggerExportEvent()
+                })
             }
         })
 

@@ -86,7 +86,6 @@ export default function DiagramEditor({autoSave}: { autoSave: boolean }) {
         }
     }, [onSaveDiagramm, attachment, issue, article, target])
 
-
     return (
         <div className={"w-full h-full relative"}>
             <div id={"editor"} className={"w-full h-full"}>
