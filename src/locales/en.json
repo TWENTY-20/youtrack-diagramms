@@ -42,5 +42,10 @@
   "confirm": "Confirm",
   "contentLoadingError": "The content could not be loaded. Please select the attachment again.",
   "location": "Location",
-  "openDiagram" : "Open diagram"
+  "openDiagram": "Open diagram",
+  "save": "Save",
+  "saved": "Saved",
+  "notSaved": "Not saved",
+  "issues": "Issue",
+  "articles": "Article"
 }

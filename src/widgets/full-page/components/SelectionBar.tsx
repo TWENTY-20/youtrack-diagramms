@@ -4,12 +4,12 @@ import {useFilterContext} from "../context/FilterContextProvider.tsx";
 import useIssues from "../hooks/useIssues.tsx";
 import useArticles from "../hooks/useArticles.tsx";
 import {ModalMode, Target} from "../entities/util.ts";
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useModalContext} from "../context/ModalContextProvider.tsx";
-import {host} from "../youTrackApp.ts";
+import YTApp, {host} from "../youTrackApp.ts";
 import {CacheResponse} from "../entities/types.ts";
 import {fetchArticle, fetchIssue} from "../util/queries.ts";
-import Icon from "@jetbrains/ring-ui-built/components/icon";
+import Icon, {Color} from "@jetbrains/ring-ui-built/components/icon";
 import Add from "@jetbrains/icons/add"
 import Select from "@jetbrains/ring-ui-built/components/select/select";
 import {
@@ -17,9 +17,13 @@ import {
     issueToSelectItem,
     nullableArticleToSelectItem,
     nullableAttachmentToSelectItem,
-    nullableIssueToSelectItem,
+    nullableIssueToSelectItem, triggerExportEvent,
 } from "../util/util.ts";
 import {Size} from "@jetbrains/ring-ui-built/components/input/input";
+import Success from "@jetbrains/icons/success-12px"
+import Cancel from "@jetbrains/icons/cancel-12px"
+import NewWindow from "@jetbrains/icons/new-window"
+import Text from "@jetbrains/ring-ui-built/components/text/text";
 
 export default function SelectionBar() {
 
@@ -36,7 +40,9 @@ export default function SelectionBar() {
         target,
         setTarget,
         setArticleAndReset,
-        setIssueAndReset
+        setIssueAndReset,
+        isSaved,
+        isSomethingSelected
     } = useFilterContext()
 
     const {issues, issuesLoading, fetchNextIssues, onFilterChange: onIssuefilter} = useIssues(false)
@@ -83,81 +89,117 @@ export default function SelectionBar() {
 
     }, []);
 
+    const SavedIndicator = ({saved}: { saved: boolean }) => (
+        <div className={"saved-indicator"}>
+            <Icon glyph={saved ? Success : Cancel} color={saved ? Color.GREEN : Color.RED}/>
+            <Text info>{saved ? t('saved') : t('notSaved')}</Text>
+        </div>
+    )
+
+    const getOpenBtnTitle = (target: Target) => YTApp.locale === 'de' ? `${t(target.valueOf())} ${t('open')}` : `${t('open')} ${t('target')}`
+
+    const onLeavePage = useCallback(() => {
+        let href = ''
+        if (target === Target.ARTICLE) {
+            href = `/articles${article ? '/' + article.id : ''}`
+        } else {
+            href = `/issue${issue ? '/' + issue.id : ''}`
+        }
+        window.parent.location.href = href
+    }, [target, issue, article])
+
     return (
-        <div className={"flex flex-row gap-x-2 py-6"}>
-            {showSelectPath && project !== undefined ?
-                <div className={"flex flex-row"}>
-                    <Button primary className={'select-group-left'} onClick={() => openModal(ModalMode.OPEN)}>
-                        <div className={"flex flex-row gap-x-2"}>
-                            <img src={project.iconUrl} alt={''} className={'avatar'}/>
-                            {project.name}
-                        </div>
+        <div className={"flex flex-row justify-between py-6"}>
+            <div className={"flex flex-row gap-x-2"}>
+                {showSelectPath && project !== undefined ?
+                    <div className={"flex flex-row"}>
+                        <Button primary className={'select-group-left'} onClick={() => openModal(ModalMode.OPEN)}>
+                            <div className={"flex flex-row gap-x-2"}>
+                                <img src={project.iconUrl} alt={''} className={'avatar'}/>
+                                {project.name}
+                            </div>
+                        </Button>
+                        {target === Target.ARTICLE ?
+                            <Select
+                                popupClassName={"remove-input-focus select-max-width"}
+                                label={t('selectArticle')}
+                                buttonClassName={'select-group-middle select-primary ring-button-flat'}
+                                filter={{placeholder: t("filterArticles")}}
+                                loadingMessage={t('loading')}
+                                notFoundMessage={t('noArticlesFound')}
+                                selected={nullableArticleToSelectItem(article)}
+                                loading={articlesLoading}
+                                onLoadMore={() => void fetchNextArticles()}
+                                data={articles?.map(articleToSelectItem)}
+                                onOpen={() => onArticleFilter({project: project, onlySvgAttachments: true})}
+                                onSelect={(item) => item && setArticleAndReset(item.model)}
+                                onFilter={(text) => onArticleFilter({project: project, search: text, onlySvgAttachments: true})}
+                                renderOptimization={false}
+                                size={Size.AUTO}
+
+                            >
+                            </Select>
+                            :
+                            <Select
+                                popupClassName={"remove-input-focus select-max-width"}
+                                label={t('selectIssue')}
+                                buttonClassName={'select-group-middle select-primary ring-button-flat'}
+                                filter={{placeholder: t("filterIssues")}}
+                                loadingMessage={t('loading')}
+                                notFoundMessage={t('noIssuesFound')}
+                                selected={nullableIssueToSelectItem(issue)}
+                                loading={issuesLoading}
+                                onLoadMore={() => void fetchNextIssues()}
+                                data={issues?.map(issueToSelectItem)}
+                                onSelect={(item) => item && setIssueAndReset(item.model)}
+                                onFilter={(text) => onIssuefilter({project: project, search: text, onlySvgAttachments: true})}
+                                renderOptimization={false}
+                                size={Size.AUTO}
+
+                            >
+                            </Select>
+                        }
+                        <Select
+                            popupClassName={"remove-input-focus"}
+                            label={t('selectAttachment')}
+                            buttonClassName={'select-group-right select-primary ring-button-flat'}
+                            filter={{placeholder: t("filterAttachments")}}
+                            loadingMessage={t('loading')}
+                            notFoundMessage={t('noAttachmentsFound')}
+                            selected={nullableAttachmentToSelectItem(attachment)}
+                            loading={attachments === null}
+                            data={attachments?.map(attachmentToSelectItem)}
+                            onSelect={(item) => item && setAttachment(item.model)}
+                            renderOptimization={false}
+                            size={Size.AUTO}
+                            inputPlaceholder={t('selectAttachment')}
+                        >
+                        </Select>
+                    </div>
+                    :
+                    <Button primary onClick={() => openModal(ModalMode.OPEN, () => setShowSelectPath(true))}>
+                        {t('openDiagram')}
                     </Button>
-                    {target === Target.ARTICLE ?
-                        <Select
-                            popupClassName={"remove-input-focus select-max-width"}
-                            label={t('selectArticle')}
-                            buttonClassName={'select-group-middle select-primary ring-button-flat'}
-                            filter={{placeholder: t("filterArticles")}}
-                            loadingMessage={t('loading')}
-                            notFoundMessage={t('noArticlesFound')}
-                            selected={nullableArticleToSelectItem(article)}
-                            loading={articlesLoading}
-                            onLoadMore={() => void fetchNextArticles()}
-                            data={articles?.map(articleToSelectItem)}
-                            onOpen={() => onArticleFilter({project: project, onlySvgAttachments: true})}
-                            onSelect={(item) => item && setArticleAndReset(item.model)}
-                            onFilter={(text) => onArticleFilter({project: project, search: text, onlySvgAttachments: true})}
-                            renderOptimization={false}
-                            size={Size.AUTO}
-
-                        >
-                        </Select>
-                        :
-                        <Select
-                            popupClassName={"remove-input-focus select-max-width"}
-                            label={t('selectIssue')}
-                            buttonClassName={'select-group-middle select-primary ring-button-flat'}
-                            filter={{placeholder: t("filterIssues")}}
-                            loadingMessage={t('loading')}
-                            notFoundMessage={t('noIssuesFound')}
-                            selected={nullableIssueToSelectItem(issue)}
-                            loading={issuesLoading}
-                            onLoadMore={() => void fetchNextIssues()}
-                            data={issues?.map(issueToSelectItem)}
-                            onSelect={(item) => item && setIssueAndReset(item.model)}
-                            onFilter={(text) => onIssuefilter({project: project, search: text, onlySvgAttachments: true})}
-                            renderOptimization={false}
-                            size={Size.AUTO}
-
-                        >
-                        </Select>
-                    }
-                    <Select
-                        popupClassName={"remove-input-focus"}
-                        label={t('selectAttachment')}
-                        buttonClassName={'select-group-right select-primary ring-button-flat'}
-                        filter={{placeholder: t("filterAttachments")}}
-                        loadingMessage={t('loading')}
-                        notFoundMessage={t('noAttachmentsFound')}
-                        selected={nullableAttachmentToSelectItem(attachment)}
-                        loading={attachments === null}
-                        data={attachments?.map(attachmentToSelectItem)}
-                        onSelect={(item) => item && setAttachment(item.model)}
-                        renderOptimization={false}
-                        size={Size.AUTO}
-                        inputPlaceholder={t('selectAttachment')}
-                    >
-                    </Select>
-                </div>
-                :
-                <Button primary onClick={() => openModal(ModalMode.OPEN, () => setShowSelectPath(true))}>
-                    {t('openDiagram')}
+                }
+                <Button className={'iconButton'} primary onClick={() => openModal(ModalMode.CREATE, () => {
+                    setShowSelectPath(true)
+                    triggerExportEvent()
+                })}>
+                    <Icon glyph={Add}/>
                 </Button>
+            </div>
+            {isSomethingSelected &&
+                <div className={"flex flex-row gap-x-2"}>
+                    <SavedIndicator saved={isSaved}/>
+                    <Button primary onClick={() => triggerExportEvent()}>
+                        {t('save')}
+                    </Button>
+
+                    <Button className={'iconButton'} title={getOpenBtnTitle(target)} onClick={onLeavePage}>
+                        <Icon glyph={NewWindow}/>
+                    </Button>
+                </div>
             }
-            <Button className={'iconButton'} primary onClick={() => openModal(ModalMode.CREATE, () => setShowSelectPath(true))}>
-                <Icon glyph={Add}/>
-            </Button>
         </div>
     )
 }

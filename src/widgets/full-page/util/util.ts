@@ -49,5 +49,11 @@ export const nullableArticleToSelectItem = (it: Article | undefined) => (it === 
 export const nullableIssueToSelectItem = (it: Issue | undefined) => (it === undefined ? undefined : issueToSelectItem(it));
 export const nullableAttachmentToSelectItem = (it: Attachment | undefined) => (it === undefined ? undefined : attachmentToSelectItem(it));
 
+function triggerExportEvent(): void {
+    const elements = document.getElementsByClassName('diagrams-iframe');
+    const frame = elements.length > 0 ? elements[0] : undefined;
+    if (frame) (frame as HTMLIFrameElement)?.contentWindow?.postMessage(JSON.stringify({action: 'export', format: 'xmlpng', spinKey: 'saving'}), '*');
+}
 
-export {fetchAll, fetchPaginated, fetchSection}
+
+export {fetchAll, fetchPaginated, fetchSection, triggerExportEvent}

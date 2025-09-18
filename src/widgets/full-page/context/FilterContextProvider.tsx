@@ -1,4 +1,4 @@
-import {createContext, ReactNode, useContext, useState} from "react";
+import {createContext, ReactNode, useContext, useMemo, useState} from "react";
 import {Target} from "../entities/util.ts";
 import {Article, Attachment, Issue, Project} from "../entities/youtrack.ts";
 
@@ -19,6 +19,9 @@ interface FilterContextProviderProps {
     setTargetAndReset: (target: Target) => void
     setIssueAndReset: (issue: Issue | undefined) => void
     setArticleAndReset: (article: Article | undefined) => void
+    isSomethingSelected: boolean
+    isSaved : boolean,
+    setIsSaved: (isSaved: boolean) => void
 }
 
 export default function FilterContextProvider({children}: { children: ReactNode }) {
@@ -27,6 +30,8 @@ export default function FilterContextProvider({children}: { children: ReactNode 
     const [article, setArticle] = useState<Article | undefined>(undefined)
     const [issue, setIssue] = useState<Issue | undefined>(undefined)
     const [attachment, setAttachment] = useState<Attachment | undefined>(undefined)
+    const [isSaved, setIsSaved] = useState(false)
+    const isSomethingSelected = useMemo(() => target !== undefined && ((target === Target.ARTICLE && article !== undefined) || (target === Target.ISSUE && issue !== undefined)) && attachment !== undefined, [target, article, issue, attachment])
 
     function setProjectAndReset(project: Project | undefined) {
         setProject(project)
@@ -71,7 +76,11 @@ export default function FilterContextProvider({children}: { children: ReactNode 
             setProjectAndReset,
             setTargetAndReset,
             setArticleAndReset,
-            setIssueAndReset
+            setIssueAndReset,
+            isSomethingSelected,
+            isSaved,
+            setIsSaved
+
         }}>
             {children}
         </FilterContext.Provider>

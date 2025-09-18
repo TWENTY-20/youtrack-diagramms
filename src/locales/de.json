@@ -41,5 +41,10 @@
   "confirm": "Bestätigen",
   "contentLoadingError": "Der Inhalt des Anhangs konnte nicht geladen werden. Wähle den Anhang erneut aus.",
   "location": "Speicherort",
-  "openDiagram" : "Diagramm öffnen"
+  "openDiagram" : "Diagramm öffnen",
+  "save": "Speichern",
+  "saved": "Gespeichert",
+  "notSaved": "Nicht gespeichert",
+  "issues": "Ticket",
+  "articles": "Artikel"
 }

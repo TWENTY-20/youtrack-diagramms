@@ -40,6 +40,7 @@ export function useAttachmentContent() {
     const isSelectionValid = (target: string | undefined, article: Article | undefined, issue: Issue | undefined, attachmentId: string | undefined) => {
         if (!target) return false
         if (!attachmentId) return false
+        if (attachmentId === 'new') return false
         if (target === Target.ARTICLE.valueOf() && !article) return false
         if (target === Target.ISSUE.valueOf() && !issue) return false
         return true

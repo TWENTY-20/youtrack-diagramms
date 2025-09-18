@@ -8,15 +8,14 @@ import {DrawIoEmbed} from "react-drawio";
 import {useFilterContext} from "../context/FilterContextProvider.tsx";
 import {Target} from "../entities/util.ts";
 import {saveDiagramm} from "../util/queries.ts";
-import {useConfirmContext} from "../context/ConfirmContextProvider.tsx";
 import {useAttachmentContent} from "../hooks/useAttachmentContent.tsx";
+import {triggerExportEvent} from "../util/util.ts";
 
 export default function DiagrammEditor() {
 
     const {t} = useTranslation();
 
-    const {target, article, issue, attachment} = useFilterContext()
-    const {confirm, close} = useConfirmContext()
+    const {target, article, issue, attachment, isSomethingSelected, setIsSaved} = useFilterContext()
     const {content} = useAttachmentContent()
 
     useEffect(() => {
@@ -54,26 +53,18 @@ export default function DiagrammEditor() {
         return saveDiagramm(id, attachment, target.valueOf(), data)
     }, [target, issue, article, attachment])
 
-    const onLeavePage = useCallback(() => {
-        let href = ''
-        if (target === Target.ARTICLE) {
-            href = `/articles${article ? '/' + article.id : ''}`
-        } else {
-            href = `/issue${issue ? '/' + issue.id : ''}`
-        }
-        window.parent.location.href = href
-    }, [target, issue, article])
-
     const onEvent = useCallback((evt: MessageEvent) => {
         try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             const data = JSON.parse(evt.data) as EventData;
+            console.log(data)
             if ("event" in data) {
                 switch (data.event) {
                     case 'export':
                         if (data.data) {
-                            void onSaveDiagramm(data.data).then(v => {
-                                if (v) {
+                            void onSaveDiagramm(data.data).then(saved => {
+                                setIsSaved(saved ?? false)
+                                if (saved) {
                                     host.alert(t('alert_diagramm_saved'), AlertType.SUCCESS)
                                 } else {
                                     host.alert(t('alert_diagramm_error'), AlertType.ERROR)
@@ -84,26 +75,16 @@ export default function DiagrammEditor() {
                             console.log('no export data')
                         }
                         break;
-                    case 'exit':
-                        confirm({
-                            show: true,
-                            message: t('leavePageQ'),
-                            description: t('remindSave'),
-                            onConfirm: () => {
-                                onLeavePage()
-                                close()
-                            }
-                        })
+                    case 'autosave':
+                        setIsSaved(false)
+                        if (isSomethingSelected) triggerExportEvent()
                         break
                 }
             }
         } catch {
             return
         }
-    }, [onSaveDiagramm, onLeavePage, attachment, issue, article, target])
-
-    //if (attachmentLoading) return <LoaderScreen/>
-
+    }, [onSaveDiagramm, attachment, issue, article, target])
 
     return (
         <div className={"w-full h-full relative"}>
@@ -111,11 +92,14 @@ export default function DiagrammEditor() {
                 <DrawIoEmbed
                     key={'drawio_embedded'}
                     xml={content}
+                    autosave={true}
                     urlParameters={{
                         ui: 'kennedy',
                         spin: true,
                         libraries: true,
-                        saveAndExit: false
+                        saveAndExit: false,
+                        noSaveBtn: true,
+                        noExitBtn: true
                     }}/>
             </div>
         </div>

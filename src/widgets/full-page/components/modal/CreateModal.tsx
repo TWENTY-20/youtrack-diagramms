@@ -97,10 +97,7 @@ export default function CreateModal() {
                     </ClickableLink>
                 </div>
                 <div className={"flex flex-col px-8 pb-8 gap-y-5"}>
-
-
                     <h1 className={'text-2xl font-bold'}>{mode === ModalMode.CREATE ? t('newDiagramm') : t('openDiagram')}</h1>
-
                     <div>
                         <ButtonGroup label={t('location')}>
                             <Button onClick={() => setTargetAndReset(Target.ARTICLE)} active={target === Target.ARTICLE} height={ControlsHeight.S}>{t('article')}</Button>
@@ -203,7 +200,7 @@ export default function CreateModal() {
                         />
                     }
 
-                    <div className={"flex flex-row gap-x-2"}>
+                    <div className={"flex flex-row gap-x-2 pt-2"}>
                         <Button primary height={ControlsHeight.S} onClick={() => {
                             if (mode === ModalMode.CREATE) {
                                 onAddNewDiagramm()

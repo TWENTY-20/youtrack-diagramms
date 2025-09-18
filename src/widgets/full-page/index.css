@@ -89,8 +89,21 @@ body.plugin {
     border: none !important;
     --ring-disabled-color: var(--ring-secondary-color) !important;
 }
-.avatar{
+
+.avatar {
     height: 20px;
     width: 20px;
     border-radius: var(--ring-border-radius);
+}
+
+.saved-indicator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 0.5rem;
+    border: 1px solid var(--ring-borders-color);
+    border-radius: 25px;
+    height: calc(var(--ring-unit) * 3.5);
+    padding-left: 10px;
+    padding-right: 10px;
 }
