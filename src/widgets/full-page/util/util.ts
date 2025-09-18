@@ -55,5 +55,10 @@ function triggerExportEvent(): void {
     if (frame) (frame as HTMLIFrameElement)?.contentWindow?.postMessage(JSON.stringify({action: 'export', format: 'xmlpng', spinKey: 'saving'}), '*');
 }
 
+function isDarkTheme() {
+    const styles = getComputedStyle(document.documentElement)
+    return styles.colorScheme === 'dark'
+}
 
-export {fetchAll, fetchPaginated, fetchSection, triggerExportEvent}
+
+export {fetchAll, fetchPaginated, fetchSection, triggerExportEvent, isDarkTheme}

@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import SelectionBar from "./components/SelectionBar.tsx";
 import FilterContextProvider from "./context/FilterContextProvider.tsx";
-import DiagrammEditor from "./components/DiagrammEditor.tsx";
+import DiagramEditor from "./components/DiagramEditor.tsx";
 import ConfirmContextProvider from "./context/ConfirmContextProvider.tsx";
 import ModalContextProvider from "./context/ModalContextProvider.tsx";
 import ConfirmModal from "./components/modal/ConfirmModal.tsx";
@@ -31,7 +31,7 @@ export default function App() {
                             <>
                                 <SelectionBar key={'selection_bar'} autoSave={autoSaveEnabled}/>
                                 <div className={"drawIo"}>
-                                    <DiagrammEditor key={'diagramm_editor'} autoSave={autoSaveEnabled}/>
+                                    <DiagramEditor key={'diagramm_editor'} autoSave={autoSaveEnabled}/>
                                 </div>
                             </>
                         }
@@ -41,6 +41,5 @@ export default function App() {
                 </ConfirmContextProvider>
             </FilterContextProvider>
         </div>
-
     );
 }

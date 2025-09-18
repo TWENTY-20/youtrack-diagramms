@@ -9,12 +9,12 @@ import {useFilterContext} from "../context/FilterContextProvider.tsx";
 import {Target} from "../entities/util.ts";
 import {saveDiagramm} from "../util/queries.ts";
 import {useAttachmentContent} from "../hooks/useAttachmentContent.tsx";
-import {triggerExportEvent} from "../util/util.ts";
+import {isDarkTheme, triggerExportEvent} from "../util/util.ts";
 
-export default function DiagrammEditor({autoSave}: { autoSave: boolean }) {
+
+export default function DiagramEditor({autoSave}: { autoSave: boolean }) {
 
     const {t} = useTranslation();
-
     const {target, article, issue, attachment, isSomethingSelected, setIsSaved} = useFilterContext()
     const {content} = useAttachmentContent()
 
@@ -81,6 +81,7 @@ export default function DiagrammEditor({autoSave}: { autoSave: boolean }) {
         }
     }, [onSaveDiagramm, attachment, issue, article, target])
 
+
     return (
         <div className={"w-full h-full relative"}>
             <div id={"editor"} className={"w-full h-full"}>
@@ -90,11 +91,12 @@ export default function DiagrammEditor({autoSave}: { autoSave: boolean }) {
                     autosave={true}
                     urlParameters={{
                         ui: 'kennedy',
+                        dark: isDarkTheme(),
                         spin: true,
                         libraries: true,
                         saveAndExit: false,
                         noSaveBtn: true,
-                        noExitBtn: true
+                        noExitBtn: true,
                     }}/>
             </div>
         </div>
