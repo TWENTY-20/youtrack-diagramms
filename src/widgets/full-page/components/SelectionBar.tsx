@@ -20,8 +20,8 @@ import {
     nullableIssueToSelectItem, triggerExportEvent,
 } from "../util/util.ts";
 import {Size} from "@jetbrains/ring-ui-built/components/input/input";
-import Success from "@jetbrains/icons/success-12px"
-import Cancel from "@jetbrains/icons/cancel-12px"
+import Success from "@jetbrains/icons/success"
+import Cancel from "@jetbrains/icons/cancel"
 import NewWindow from "@jetbrains/icons/new-window"
 import Text from "@jetbrains/ring-ui-built/components/text/text";
 
@@ -109,21 +109,22 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
     }, [target, issue, article])
 
     return (
-        <div className={"flex flex-row justify-between py-6"}>
+        <div className={"flex flex-row justify-between py-3"}>
             <div className={"flex flex-row gap-x-2"}>
                 {showSelectPath && project !== undefined ?
                     <div className={"flex flex-row"}>
-                        <Button primary className={'select-group-left'} onClick={() => openModal(ModalMode.OPEN)}>
+                        <Button className={'select-group-left'} onClick={() => openModal(ModalMode.OPEN)}>
                             <div className={"flex flex-row gap-x-2"}>
-                                <img src={project.iconUrl} alt={''} className={'avatar'}/>
                                 {project.name}
+                                <img src={project.iconUrl} alt={''} className={'avatar'}/>
                             </div>
                         </Button>
                         {target === Target.ARTICLE ?
                             <Select
                                 popupClassName={"remove-input-focus select-max-width"}
                                 label={t('selectArticle')}
-                                buttonClassName={'select-group-middle select-primary ring-button-flat'}
+                                buttonClassName={'select-group-middle'}
+                                className={'select-group-middle'}
                                 filter={{placeholder: t("filterArticles")}}
                                 loadingMessage={t('loading')}
                                 notFoundMessage={t('noArticlesFound')}
@@ -143,7 +144,8 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                             <Select
                                 popupClassName={"remove-input-focus select-max-width"}
                                 label={t('selectIssue')}
-                                buttonClassName={'select-group-middle select-primary ring-button-flat'}
+                                buttonClassName={'select-group-middle'}
+                                className={'select-group-middle'}
                                 filter={{placeholder: t("filterIssues")}}
                                 loadingMessage={t('loading')}
                                 notFoundMessage={t('noIssuesFound')}
@@ -162,7 +164,8 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                         <Select
                             popupClassName={"remove-input-focus"}
                             label={t('selectAttachment')}
-                            buttonClassName={'select-group-right select-primary ring-button-flat'}
+                            buttonClassName={'select-group-right'}
+                            className={'select-group-right'}
                             filter={{placeholder: t("filterAttachments")}}
                             loadingMessage={t('loading')}
                             notFoundMessage={t('noAttachmentsFound')}
@@ -177,11 +180,11 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                         </Select>
                     </div>
                     :
-                    <Button primary onClick={() => openModal(ModalMode.OPEN, () => setShowSelectPath(true))}>
+                    <Button onClick={() => openModal(ModalMode.OPEN, () => setShowSelectPath(true))}>
                         {t('openDiagram')}
                     </Button>
                 }
-                <Button className={'iconButton'} primary onClick={() => openModal(ModalMode.CREATE, () => {
+                <Button className={'iconButton'} onClick={() => openModal(ModalMode.CREATE, () => {
                     setShowSelectPath(true)
                     if (autoSave) triggerExportEvent()
                 })}>

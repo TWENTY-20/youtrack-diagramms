@@ -21,7 +21,7 @@ export default function App() {
 
 
     return (
-        <div className={'ps-4 relative'}>
+        <div className={' relative'}>
             <FilterContextProvider>
                 <ConfirmContextProvider>
                     <ModalContextProvider>
