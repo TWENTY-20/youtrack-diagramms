@@ -6,7 +6,7 @@ import {useDebounceCallback} from "usehooks-ts";
 
 export default function useIssues(fetchInitial = true) {
 
-    const {results, loading, fetchNextPage, setQuery} = useFetchPaginated<Issue>(`issues?fields=${ISSUE_FIELDS}`, '', 20, fetchInitial)
+    const {results, loading, fetchNextPage, setQuery} = useFetchPaginated<Issue>(`issues?fields=${ISSUE_FIELDS}`, '', 100, fetchInitial)
 
     const onFilterChange = useDebounceCallback((filter: Filter) => {
         setQuery(generateFilterQuery(filter, Target.ISSUE))

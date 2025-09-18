@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {host} from "../youTrackApp.ts";
 
-export default function useFetchPaginated<T>(url: string, query: string = '', pageSize: number = 10, fetchInitial = true) {
+export default function useFetchPaginated<T>(url: string, query: string = '', pageSize: number = 100, fetchInitial = true) {
     const [pages, setPages] = useState<T[][]>([])
     const [loading, setLoading] = useState(false)
     const [hasNextPage, setHasNextPage] = useState(true)

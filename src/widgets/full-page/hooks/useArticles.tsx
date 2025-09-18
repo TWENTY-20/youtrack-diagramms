@@ -6,7 +6,7 @@ import {Filter, Target} from "../entities/util.ts";
 
 export default function useArticles(fetchInitial = true) {
 
-    const {results, loading, fetchNextPage, setQuery} = useFetchPaginated<Article>(`articles?fields=${ARTICLE_FIELDS}`, '', 20, fetchInitial)
+    const {results, loading, fetchNextPage, setQuery} = useFetchPaginated<Article>(`articles?fields=${ARTICLE_FIELDS}`, '', 100, fetchInitial)
 
     const onFilterChange = useDebounceCallback((filter: Filter) => {
         setQuery(generateFilterQuery(filter, Target.ARTICLE))
