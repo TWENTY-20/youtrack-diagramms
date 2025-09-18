@@ -1,4 +1,4 @@
-import { Host } from "./entities/types.ts";
+import { Host } from "../full-page/entities/types.ts";
 
 declare const YTApp: {
     locale: string,

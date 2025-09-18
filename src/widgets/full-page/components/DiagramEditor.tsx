@@ -1,4 +1,4 @@
-import {host} from "../youTrackApp.ts";
+import {host} from "../../global/youTrackApp.ts";
 
 import {useTranslation} from "react-i18next";
 import {useCallback, useEffect} from "react";

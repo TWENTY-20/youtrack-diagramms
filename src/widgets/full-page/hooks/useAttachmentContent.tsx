@@ -3,7 +3,7 @@ import {useCallback, useEffect, useState} from "react";
 import {Article, Attachment, Issue} from "../entities/youtrack.ts";
 import {Target} from "../entities/util.ts";
 import {ATTACHMENT_CONTENT_FIELDS} from "../util/queries.ts";
-import {host} from "../youTrackApp.ts";
+import {host} from "../../global/youTrackApp.ts";
 import {useTranslation} from "react-i18next";
 
 export function useAttachmentContent() {

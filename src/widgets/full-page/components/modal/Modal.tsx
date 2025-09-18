@@ -8,7 +8,7 @@ import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/control
 import Select from "@jetbrains/ring-ui-built/components/select/select";
 import {
     articleToSelectItem,
-    attachmentToSelectItem,
+    attachmentToSelectItem, extractExtension,
     issueToSelectItem,
     nullableArticleToSelectItem,
     nullableAttachmentToSelectItem,
@@ -21,7 +21,7 @@ import useArticles from "../../hooks/useArticles.tsx";
 import useIssues from "../../hooks/useIssues.tsx";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import Input, {Size} from "@jetbrains/ring-ui-built/components/input/input";
-import {host} from "../../youTrackApp.ts";
+import {host} from "../../../global/youTrackApp.ts";
 import {Attachment, Project} from "../../entities/youtrack.ts";
 import ButtonGroup from "@jetbrains/ring-ui-built/components/button-group/button-group";
 import ClickableLink from "@jetbrains/ring-ui-built/components/link/clickableLink";
@@ -63,7 +63,7 @@ export default function Modal() {
 
     const onAddNewDiagramm = useCallback(() => {
         if (project !== null && diagramName !== undefined && (articles !== null || issues !== null)) {
-            setAttachment({mimeType: "image/svg+xml", size: 0, base64Content: "", extension: "", id: "new", name: diagramName + '.svg'})
+            setAttachment({mimeType: "image/svg+xml", size: 0, base64Content: "", extension: "svg", id: "new", name: diagramName + '.svg'})
             closeModal()
             setDiagramName(undefined)
         } else {
@@ -78,9 +78,9 @@ export default function Modal() {
 
     const attachments = useMemo(() => {
         if (target === Target.ARTICLE) {
-            return article ? article.attachments.filter(a => a.extension === "svg") : []
+            return article ? article.attachments.filter(a => (a.extension ? a.extension : extractExtension(a.name)) === "svg") : []
         } else {
-            return issue ? issue.attachments.filter(a => a.extension === "svg") : []
+            return issue ? issue.attachments.filter(a => (a.extension ? a.extension : extractExtension(a.name)) === "svg") : []
         }
     }, [issue, article, target])
 

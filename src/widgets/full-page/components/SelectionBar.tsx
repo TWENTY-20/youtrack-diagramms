@@ -6,14 +6,14 @@ import useArticles from "../hooks/useArticles.tsx";
 import {ModalMode, Target} from "../entities/util.ts";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useModalContext} from "../context/ModalContextProvider.tsx";
-import YTApp, {host} from "../youTrackApp.ts";
+import YTApp, {host} from "../../global/youTrackApp.ts";
 import {CacheResponse} from "../entities/types.ts";
 import {fetchArticle, fetchIssue} from "../util/queries.ts";
 import Icon, {Color} from "@jetbrains/ring-ui-built/components/icon";
 import Add from "@jetbrains/icons/add"
 import Select from "@jetbrains/ring-ui-built/components/select/select";
 import {
-    articleToSelectItem, attachmentToSelectItem,
+    articleToSelectItem, attachmentToSelectItem, extractExtension,
     issueToSelectItem,
     nullableArticleToSelectItem,
     nullableAttachmentToSelectItem,
@@ -52,9 +52,9 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
 
     const attachments = useMemo(() => {
         if (target === Target.ARTICLE) {
-            return article ? article.attachments.filter(a => a.extension === "svg") : []
+            return article ? article.attachments.filter(a => (a.extension ? a.extension : extractExtension(a.name)) === "svg") : []
         } else {
-            return issue ? issue.attachments.filter(a => a.extension === "svg") : []
+            return issue ? issue.attachments.filter(a => (a.extension ? a.extension : extractExtension(a.name)) === "svg") : []
         }
     }, [issue, article, target])
 

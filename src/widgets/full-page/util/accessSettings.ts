@@ -1,4 +1,4 @@
-import {host} from "../youTrackApp.ts";
+import {host} from "../../global/youTrackApp.ts";
 
 interface SettingsResponse {
     value: boolean

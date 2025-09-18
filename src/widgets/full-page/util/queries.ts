@@ -1,6 +1,6 @@
 import {Filter, SaveResponse, Target} from "../entities/util.ts";
 import {Article, Attachment, Issue} from "../entities/youtrack.ts";
-import {host} from "../youTrackApp.ts";
+import {host} from "../../global/youTrackApp.ts";
 
 export const ATTACHMENT_FIELDS = "id,name,extension,mimeType,size,created"
 export const ATTACHMENT_CONTENT_FIELDS = "id,name,extension,base64Content,mimeType,size"
@@ -51,6 +51,8 @@ export async function saveDiagramm(wrapperId: string, selectedAttachment: Attach
     const diagramm = {
         name: selectedAttachment.name,
         base64Content: data,
+        mimeType: "image/svg+xml",
+        extension: "svg"
     }
     if (selectedAttachment.id === 'new') {
         if (target === 'issues') {
