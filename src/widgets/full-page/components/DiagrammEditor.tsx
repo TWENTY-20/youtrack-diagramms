@@ -11,7 +11,7 @@ import {saveDiagramm} from "../util/queries.ts";
 import {useAttachmentContent} from "../hooks/useAttachmentContent.tsx";
 import {triggerExportEvent} from "../util/util.ts";
 
-export default function DiagrammEditor() {
+export default function DiagrammEditor({autoSave}: { autoSave: boolean }) {
 
     const {t} = useTranslation();
 
@@ -53,31 +53,26 @@ export default function DiagrammEditor() {
         return saveDiagramm(id, attachment, target.valueOf(), data)
     }, [target, issue, article, attachment])
 
-    const onEvent = useCallback((evt: MessageEvent) => {
+    const onEvent = useCallback((event: MessageEvent) => {
         try {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            const data = JSON.parse(evt.data) as EventData;
-            console.log(data)
+            const data = JSON.parse(event.data as string) as EventData;
             if ("event" in data) {
                 switch (data.event) {
                     case 'export':
                         if (data.data) {
                             void onSaveDiagramm(data.data).then(saved => {
                                 setIsSaved(saved ?? false)
-                                if (saved) {
-                                    host.alert(t('alert_diagramm_saved'), AlertType.SUCCESS)
-                                } else {
+                                if (!saved) {
                                     host.alert(t('alert_diagramm_error'), AlertType.ERROR)
-                                    console.log('not saved')
                                 }
                             })
                         } else {
-                            console.log('no export data')
+                            console.error('Export event: no export data')
                         }
                         break;
                     case 'autosave':
                         setIsSaved(false)
-                        if (isSomethingSelected) triggerExportEvent()
+                        if (isSomethingSelected && autoSave) triggerExportEvent()
                         break
                 }
             }

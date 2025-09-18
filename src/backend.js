@@ -62,6 +62,14 @@ exports.httpHandler = {
 
                 ctx.response.json(response)
             }
-        }
+        },
+        {
+            method: 'GET',
+            path: 'getAutoSaveSetting',
+            handle: (ctx) => {
+                const value = ctx.settings.autoSave
+                ctx.response.json({value: Boolean(value)})
+            }
+        },
     ]
 };

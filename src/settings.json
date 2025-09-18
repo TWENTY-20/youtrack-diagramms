@@ -2,7 +2,14 @@
   "$id": "https://youtrack.demo.app.com/settings.schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "title": "YouTrack Demo application settings",
-  "description": "Define what settings should be used",
-  "properties": {}
+  "title": "Diagram Editor settings",
+  "properties": {
+    "autoSave": {
+      "title": "Enable auto save",
+      "type": "boolean",
+      "default": true,
+      "description": "Enable auto save of the diagramm editor"
+    }
+  },
+  "required": ["autoSave"]
 }

@@ -25,7 +25,7 @@ import Cancel from "@jetbrains/icons/cancel-12px"
 import NewWindow from "@jetbrains/icons/new-window"
 import Text from "@jetbrains/ring-ui-built/components/text/text";
 
-export default function SelectionBar() {
+export default function SelectionBar({autoSave}: { autoSave: boolean }) {
 
     const {t} = useTranslation();
     const {
@@ -183,7 +183,7 @@ export default function SelectionBar() {
                 }
                 <Button className={'iconButton'} primary onClick={() => openModal(ModalMode.CREATE, () => {
                     setShowSelectPath(true)
-                    triggerExportEvent()
+                    if (autoSave) triggerExportEvent()
                 })}>
                     <Icon glyph={Add}/>
                 </Button>
