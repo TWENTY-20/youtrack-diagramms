@@ -15,6 +15,7 @@ export function useAttachmentContent() {
     const [content, setContent] = useState<string | undefined>(undefined)
 
     useEffect(() => {
+        if (attachment?.preventFetchContent || attachment?.id === 'new') return
         void fetchAttachment()
     }, [attachment])
 

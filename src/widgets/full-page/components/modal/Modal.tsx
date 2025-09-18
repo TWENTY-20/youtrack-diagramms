@@ -36,7 +36,7 @@ export default function Modal() {
     const {t} = useTranslation();
 
     const {action: {show, mode, callback}, closeModal} = useModalContext()
-    const {project, target, issue, article, setAttachment, setProjectAndReset, setTargetAndReset, setIssueAndReset, setArticleAndReset, attachment} = useFilterContext()
+    const {project, target, issue, article, setAttachment, setProjectAndReset, setTargetAndReset, setIssueAndReset, setArticleAndReset} = useFilterContext()
 
     const {projects, projectsLoading, fetchNextProjects, onSearchChange: onProjectSearch} = useProjects()
     const {articles, articlesLoading, fetchNextArticles, onFilterChange: onArticleFilter} = useArticles(false)
@@ -63,7 +63,7 @@ export default function Modal() {
 
     const onAddNewDiagramm = useCallback(() => {
         if (project !== null && diagramName !== undefined && (articles !== null || issues !== null)) {
-            setAttachment({mimeType: "", size: 0, base64Content: "", extension: "", id: "new", name: diagramName + '.svg'})
+            setAttachment({mimeType: "image/svg+xml", size: 0, base64Content: "", extension: "", id: "new", name: diagramName + '.svg'})
             closeModal()
             setDiagramName(undefined)
         } else {
@@ -152,8 +152,13 @@ export default function Modal() {
                             onLoadMore={() => {
                                 void fetchNextArticles()
                             }}
-                            onSelect={(item) => item && setArticleAndReset(item.model)}
-                            onFilter={(text) => onArticleFilter({project: project, search: text})}
+                            onSelect={(item) => {
+                                if (item) {
+                                    setArticleAndReset(item.model)
+                                    setCachedAttachment(undefined)
+                                }
+                            }}
+                            onFilter={(text) => onArticleFilter({project: project, search: text, onlySvgAttachments: mode === ModalMode.OPEN})}
                             disabled={project === undefined}
                             renderOptimization={false}
                             size={Size.FULL}
@@ -173,8 +178,13 @@ export default function Modal() {
                             }}
                             notFoundMessage={t('noIssuesFound')}
                             data={issues?.map(issueToSelectItem)}
-                            onSelect={(item) => item && setIssueAndReset(item.model)}
-                            onFilter={(text) => onIssueFilter({project: project, search: text})}
+                            onSelect={(item) => {
+                                if (item) {
+                                    setIssueAndReset(item.model)
+                                    setCachedAttachment(undefined)
+                                }
+                            }}
+                            onFilter={(text) => onIssueFilter({project: project, search: text, onlySvgAttachments: mode === ModalMode.OPEN})}
                             disabled={project === undefined}
                             renderOptimization={false}
                             size={Size.FULL}
@@ -199,7 +209,7 @@ export default function Modal() {
                             filter={{placeholder: t("filterAttachments")}}
                             loadingMessage={t('loading')}
                             notFoundMessage={t('noAttachmentsFound')}
-                            selected={nullableAttachmentToSelectItem(attachment)}
+                            selected={nullableAttachmentToSelectItem(cachedAttachment)}
                             loading={attachments === null}
                             data={attachments?.map(attachmentToSelectItem)}
                             onSelect={(item) => item && setCachedAttachment(item.model)}

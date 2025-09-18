@@ -16,6 +16,7 @@ export interface Filter {
     search?: string
     onlySvgAttachments?: boolean
 }
+
 export interface ConfirmAction {
     show: boolean
     message: string
@@ -23,7 +24,12 @@ export interface ConfirmAction {
     onConfirm: () => void
 }
 
-export enum ModalMode{
+export enum ModalMode {
     OPEN,
     CREATE
+}
+
+export interface SaveResponse {
+    attachmentId?: string
+    success: boolean
 }

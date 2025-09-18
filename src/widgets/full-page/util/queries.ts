@@ -1,18 +1,18 @@
-import {Filter} from "../entities/util.ts";
-import {Attachment, Issue} from "../entities/youtrack.ts";
+import {Filter, SaveResponse, Target} from "../entities/util.ts";
+import {Article, Attachment, Issue} from "../entities/youtrack.ts";
 import {host} from "../youTrackApp.ts";
 
-export const ATTACHMENT_FIELDS = "id,name,extension,mimeType,size"
+export const ATTACHMENT_FIELDS = "id,name,extension,mimeType,size,created"
 export const ATTACHMENT_CONTENT_FIELDS = "id,name,extension,base64Content,mimeType,size"
 export const PROJECT_FIELDS = "id,name,iconUrl,archived"
 export const ISSUE_FIELDS = `id,summary,idReadable,project(${PROJECT_FIELDS}),attachments(${ATTACHMENT_FIELDS})`
 export const ARTICLE_FIELDS = `id,summary,idReadable,project(${PROJECT_FIELDS}),attachments(${ATTACHMENT_FIELDS})`
 export const SVG_QUERY = 'attachments:*.svg'
 
-export function generateFilterQuery(filter: Filter) {
+export function generateFilterQuery(filter: Filter, target: Target) {
     let query = ''
     if (filter.search) {
-        query += `+summary:{${encodeURIComponent(filter.search)}}`
+        query += `${target === Target.ISSUE ? 'summary' : 'title'}:{${encodeURIComponent(filter.search)}*}`
     }
     if (filter.project) {
         query += `+project:{${encodeURIComponent(filter.project.name)}}`
@@ -33,24 +33,32 @@ export async function fetchIssue(id: string): Promise<Issue | undefined> {
     return await host.fetchYouTrack(`issues/${id}?fields=${ISSUE_FIELDS}`, {}) as Promise<Issue | undefined>
 }
 
-export async function fetchArticle(id: string): Promise<Issue | undefined> {
-    return await host.fetchYouTrack(`articles/${id}?fields=${ARTICLE_FIELDS}`, {}) as Promise<Issue | undefined>
+export async function fetchArticle(id: string): Promise<Article | undefined> {
+    return await host.fetchYouTrack(`articles/${id}?fields=${ARTICLE_FIELDS}`, {}) as Promise<Article | undefined>
+}
+
+async function refetchArticleAttachmentId(articleId: string, attachmentName: string) {
+    const article = await fetchArticle(articleId)
+    if (!article) return undefined
+    const attachmentsList = article.attachments.filter(it => it.name === attachmentName)
+    if (attachmentsList.length === 0) return undefined
+    if (attachmentsList.length === 1) return attachmentsList[0].id
+    return attachmentsList.sort((a, b) => b.created - a.created)[0].id
 }
 
 
-export async function saveDiagramm(wrapperId: string, selectedAttachment: Attachment, target: string, data: string) {
+export async function saveDiagramm(wrapperId: string, selectedAttachment: Attachment, target: string, data: string): Promise<SaveResponse> {
     const diagramm = {
         name: selectedAttachment.name,
         base64Content: data,
     }
     if (selectedAttachment.id === 'new') {
-        //const formData = new FormData();
         if (target === 'issues') {
             return host.fetchYouTrack(`${target}/${wrapperId}/attachments?fields=id,name,extension,base64Content`, {
                 method: "POST",
                 body: diagramm
             }).then((res: Attachment) => {
-                return !!res;
+                return res ? {success: true, attachmentId: res.id} : {success: false};
             })
 
         } else {
@@ -62,8 +70,13 @@ export async function saveDiagramm(wrapperId: string, selectedAttachment: Attach
             return host.fetchApp("backend/addAttachmentToArticle", {
                 method: "POST",
                 body: body
-            }).then((res) => {
-                return !!res
+            }).then(async (res: { name: string }) => {
+                if (res) {
+                    const attachmentId = await refetchArticleAttachmentId(wrapperId, res.name)
+                    return attachmentId ? {success: true, attachmentId: attachmentId} : {success: false};
+                } else {
+                    return {success: false};
+                }
             })
         }
     } else {
@@ -71,7 +84,7 @@ export async function saveDiagramm(wrapperId: string, selectedAttachment: Attach
             method: "POST",
             body: diagramm
         }).then((res: Attachment) => {
-            return !!res;
+            return res ? {success: true, attachmentId: res.id} : {success: false};
         })
     }
 }

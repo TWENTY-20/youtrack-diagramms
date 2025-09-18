@@ -50,7 +50,6 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
     const {openModal} = useModalContext()
     const [showSelectPath, setShowSelectPath] = useState(false)
 
-
     const attachments = useMemo(() => {
         if (target === Target.ARTICLE) {
             return article ? article.attachments : []

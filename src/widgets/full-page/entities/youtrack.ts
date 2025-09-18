@@ -34,6 +34,8 @@ export interface Attachment {
     base64Content: string
     mimeType: string
     size?: number
+    created: number
+    preventFetchContent?: boolean
 }
 
 export interface ArticleAttachment extends Attachment {

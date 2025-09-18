@@ -15,7 +15,7 @@ import {isDarkTheme, triggerExportEvent} from "../util/util.ts";
 export default function DiagramEditor({autoSave}: { autoSave: boolean }) {
 
     const {t} = useTranslation();
-    const {target, article, issue, attachment, isSomethingSelected, setIsSaved} = useFilterContext()
+    const {target, article, issue, attachment, isSomethingSelected, setIsSaved, setAttachment} = useFilterContext()
     const {content} = useAttachmentContent()
 
     useEffect(() => {
@@ -29,7 +29,7 @@ export default function DiagramEditor({autoSave}: { autoSave: boolean }) {
         let id: string | undefined = undefined
         if (attachment === undefined) {
             host.alert(t('alert_select_attachment'), AlertType.WARNING)
-            return
+            return false
         }
         if (target === Target.ARTICLE) {
             if (article === undefined) {
@@ -50,7 +50,12 @@ export default function DiagramEditor({autoSave}: { autoSave: boolean }) {
                 id = issue.idReadable
             }
         }
-        return saveDiagramm(id, attachment, target.valueOf(), data)
+        const response = await saveDiagramm(id, attachment, target.valueOf(), data)
+        if (response.success) {
+            if (response.attachmentId) setAttachment({...attachment, id: response.attachmentId, preventFetchContent: true})
+            else return false
+        }
+        return response.success
     }, [target, issue, article, attachment])
 
     const onEvent = useCallback((event: MessageEvent) => {

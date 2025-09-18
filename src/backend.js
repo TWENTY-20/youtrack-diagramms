@@ -53,7 +53,6 @@ exports.httpHandler = {
                 //const id = ctx.request.getParameter('id')
                 const article = entities.Article.findById(body.id)
                 const a = article.addAttachment(body.content, body.filename, 'base64', 'image/svg+xml');
-
                 const response = {
                     id: a.id,
                     name: a.name,
