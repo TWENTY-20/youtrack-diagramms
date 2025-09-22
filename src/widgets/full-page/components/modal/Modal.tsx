@@ -24,7 +24,7 @@ import Input, {Size} from "@jetbrains/ring-ui-built/components/input/input";
 import {host} from "../../../global/youTrackApp.ts";
 import {Attachment, Project} from "../../entities/youtrack.ts";
 import ButtonGroup from "@jetbrains/ring-ui-built/components/button-group/button-group";
-import ClickableLink from "@jetbrains/ring-ui-built/components/link/clickableLink";
+import ClickableLink from "@jetbrains/ring-ui-built/components/link/clickable-link";
 import Icon from "@jetbrains/ring-ui-built/components/icon";
 import Close from "@jetbrains/icons/close";
 import Info from "@jetbrains/icons/info";
