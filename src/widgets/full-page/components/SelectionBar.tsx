@@ -107,7 +107,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
         </div>
     )
 
-    const getOpenBtnTitle = (target: Target) => YTApp.locale === 'de' ? `${t(target.valueOf())} ${t('open')}` : `${t('open')} ${t('target')}`
+    const getOpenBtnTitle = (target: Target) => YTApp.locale === 'de' ? `${t(target.valueOf())} ${t('open')}` : `${t('open')} ${t(target)}`
 
     const onLeavePage = useCallback(() => {
         let href = ''
@@ -116,7 +116,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
         } else {
             href = `/issue${issue ? '/' + issue.id : ''}`
         }
-        window.parent.location.href = href
+        window.open(href, '_blank')
     }, [target, issue, article])
 
     return (
