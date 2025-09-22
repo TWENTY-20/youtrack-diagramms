@@ -8,7 +8,7 @@ import {ControlsHeight} from "@jetbrains/ring-ui-built/components/global/control
 import Select from "@jetbrains/ring-ui-built/components/select/select";
 import {
     articleToSelectItem,
-    attachmentToSelectItem, extractExtension,
+    attachmentToSelectItem,
     issueToSelectItem,
     nullableArticleToSelectItem,
     nullableAttachmentToSelectItem,
@@ -29,6 +29,7 @@ import Icon from "@jetbrains/ring-ui-built/components/icon";
 import Close from "@jetbrains/icons/close";
 import Info from "@jetbrains/icons/info";
 import Tooltip from "@jetbrains/ring-ui-built/components/tooltip/tooltip";
+import {filterArticle, filterAttachment, filterIssue} from "../../util/filter.ts";
 
 
 export default function Modal() {
@@ -39,11 +40,21 @@ export default function Modal() {
     const {project, target, issue, article, setAttachment, setProjectAndReset, setTargetAndReset, setIssueAndReset, setArticleAndReset} = useFilterContext()
 
     const {projects, projectsLoading, fetchNextProjects, onSearchChange: onProjectSearch} = useProjects()
-    const {articles, articlesLoading, fetchNextArticles, onFilterChange: onArticleFilter} = useArticles(false)
-    const {issues, issuesLoading, fetchNextIssues, onFilterChange: onIssueFilter} = useIssues(false)
+    const {articles: articleResults, articlesLoading, fetchNextArticles, onFilterChange: onArticleFilter} = useArticles(false)
+    const {issues: issueResults, issuesLoading, fetchNextIssues, onFilterChange: onIssueFilter} = useIssues(false)
+
+    const articles = useMemo(() => {
+        if (mode === ModalMode.OPEN) return articleResults.filter(filterArticle)
+        else return articleResults
+    }, [articleResults])
+
+    const issues = useMemo(() => {
+        if (mode === ModalMode.OPEN) return issueResults.filter(filterIssue)
+        else return issueResults
+    }, [issueResults])
+
 
     const [diagramName, setDiagramName] = useState<string | undefined>(undefined)
-
     const [cachedAttachment, setCachedAttachment] = useState<Attachment | undefined>(undefined)
 
     useEffect(() => {
@@ -78,9 +89,9 @@ export default function Modal() {
 
     const attachments = useMemo(() => {
         if (target === Target.ARTICLE) {
-            return article ? article.attachments.filter(a => (a.extension ? a.extension : extractExtension(a.name)) === "svg") : []
+            return article ? article.attachments.filter(filterAttachment) : []
         } else {
-            return issue ? issue.attachments.filter(a => (a.extension ? a.extension : extractExtension(a.name)) === "svg") : []
+            return issue ? issue.attachments.filter(filterAttachment) : []
         }
     }, [issue, article, target])
 

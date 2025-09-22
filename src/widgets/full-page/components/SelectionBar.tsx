@@ -13,7 +13,7 @@ import Icon, {Color} from "@jetbrains/ring-ui-built/components/icon";
 import Add from "@jetbrains/icons/add"
 import Select from "@jetbrains/ring-ui-built/components/select/select";
 import {
-    articleToSelectItem, attachmentToSelectItem, extractExtension,
+    articleToSelectItem, attachmentToSelectItem,
     issueToSelectItem,
     nullableArticleToSelectItem,
     nullableAttachmentToSelectItem,
@@ -24,6 +24,7 @@ import Success from "@jetbrains/icons/success"
 import Cancel from "@jetbrains/icons/cancel"
 import NewWindow from "@jetbrains/icons/new-window"
 import Text from "@jetbrains/ring-ui-built/components/text/text";
+import {filterArticle, filterAttachment, filterIssue} from "../util/filter.ts";
 
 export default function SelectionBar({autoSave}: { autoSave: boolean }) {
 
@@ -52,9 +53,9 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
 
     const attachments = useMemo(() => {
         if (target === Target.ARTICLE) {
-            return article ? article.attachments.filter(a => (a.extension ? a.extension : extractExtension(a.name)) === "svg") : []
+            return article ? article.attachments.filter(filterAttachment) : []
         } else {
-            return issue ? issue.attachments.filter(a => (a.extension ? a.extension : extractExtension(a.name)) === "svg") : []
+            return issue ? issue.attachments.filter(filterAttachment) : []
         }
     }, [issue, article, target])
 
@@ -141,7 +142,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                                 selected={nullableArticleToSelectItem(article)}
                                 loading={articlesLoading}
                                 onLoadMore={() => void fetchNextArticles()}
-                                data={articles?.map(articleToSelectItem)}
+                                data={articles?.filter(filterArticle).map(articleToSelectItem)}
                                 onOpen={() => onArticleFilter({project: project, onlySvgAttachments: true})}
                                 onSelect={(item) => item && setArticleAndReset(item.model)}
                                 onFilter={(text) => onArticleFilter({project: project, search: text, onlySvgAttachments: true})}
@@ -162,7 +163,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                                 selected={nullableIssueToSelectItem(issue)}
                                 loading={issuesLoading}
                                 onLoadMore={() => void fetchNextIssues()}
-                                data={issues?.map(issueToSelectItem)}
+                                data={issues?.filter(filterIssue).map(issueToSelectItem)}
                                 onSelect={(item) => item && setIssueAndReset(item.model)}
                                 onFilter={(text) => onIssuefilter({project: project, search: text, onlySvgAttachments: true})}
                                 renderOptimization={false}
