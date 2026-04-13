@@ -1,34 +1,29 @@
-import {useTranslation} from "react-i18next";
-import Button from "@jetbrains/ring-ui-built/components/button/button";
-import {useFilterContext} from "../context/FilterContextProvider.tsx";
-import useIssues from "../hooks/useIssues.tsx";
-import useArticles from "../hooks/useArticles.tsx";
-import {ModalMode, Target} from "../entities/util.ts";
-import {useCallback, useEffect, useMemo, useState} from "react";
-import {useModalContext} from "../context/ModalContextProvider.tsx";
-import YTApp, {host} from "../../global/youTrackApp.ts";
-import {CacheResponse} from "../entities/types.ts";
-import {fetchArticle, fetchIssue} from "../util/queries.ts";
-import Icon, {Color} from "@jetbrains/ring-ui-built/components/icon";
-import Add from "@jetbrains/icons/add"
-import Select from "@jetbrains/ring-ui-built/components/select/select";
-import {
-    articleToSelectItem, attachmentToSelectItem,
-    issueToSelectItem,
-    nullableArticleToSelectItem,
-    nullableAttachmentToSelectItem,
-    nullableIssueToSelectItem, triggerExportEvent,
-} from "../util/util.ts";
-import {Size} from "@jetbrains/ring-ui-built/components/input/input";
-import Success from "@jetbrains/icons/success"
-import Cancel from "@jetbrains/icons/cancel"
-import NewWindow from "@jetbrains/icons/new-window"
-import Text from "@jetbrains/ring-ui-built/components/text/text";
-import {filterArticle, filterAttachment, filterIssue} from "../util/filter.ts";
+import Add from '@jetbrains/icons/add';
+import Cancel from '@jetbrains/icons/cancel';
+import NewWindow from '@jetbrains/icons/new-window';
+import Success from '@jetbrains/icons/success';
+import Button from '@jetbrains/ring-ui-built/components/button/button';
+import Icon, { Color } from '@jetbrains/ring-ui-built/components/icon';
+import { Size } from '@jetbrains/ring-ui-built/components/input/input';
+import Select from '@jetbrains/ring-ui-built/components/select/select';
+import Text from '@jetbrains/ring-ui-built/components/text/text';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-export default function SelectionBar({autoSave}: { autoSave: boolean }) {
+import YTApp, { host } from '../../global/youTrackApp.ts';
+import { useFilterContext } from '../context/FilterContextProvider.tsx';
+import { useModalContext } from '../context/ModalContextProvider.tsx';
+import { CacheResponse } from '../entities/types.ts';
+import { ModalMode, Target } from '../entities/util.ts';
+import useArticles from '../hooks/useArticles.tsx';
+import useIssues from '../hooks/useIssues.tsx';
+import { filterArticle, filterAttachment, filterIssue } from '../util/filter.ts';
+import { fetchArticle, fetchIssue } from '../util/queries.ts';
+import { articleToSelectItem, attachmentToSelectItem, issueToSelectItem, matchSelectItemByLabelOrDescription, nullableArticleToSelectItem, nullableAttachmentToSelectItem, nullableIssueToSelectItem, triggerExportEvent } from '../util/util.ts';
 
-    const {t} = useTranslation();
+export default function SelectionBar({ autoSave }: { autoSave: boolean }) {
+
+    const { t } = useTranslation();
     const {
         project,
         setProject,
@@ -46,9 +41,9 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
         isSomethingSelected
     } = useFilterContext()
 
-    const {issues, issuesLoading, fetchNextIssues, onFilterChange: onIssuefilter} = useIssues(false)
-    const {articles, articlesLoading, fetchNextArticles, onFilterChange: onArticleFilter} = useArticles(false)
-    const {openModal} = useModalContext()
+    const { issues, issuesLoading, fetchNextIssues, onFilterChange: onIssuefilter } = useIssues(false)
+    const { articles, articlesLoading, fetchNextArticles, onFilterChange: onArticleFilter } = useArticles(false)
+    const { openModal } = useModalContext()
     const [showSelectPath, setShowSelectPath] = useState(false)
 
     const attachments = useMemo(() => {
@@ -100,9 +95,9 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
 
     }, []);
 
-    const SavedIndicator = ({saved}: { saved: boolean }) => (
+    const SavedIndicator = ({ saved }: { saved: boolean }) => (
         <div className={"saved-indicator"}>
-            <Icon glyph={saved ? Success : Cancel} color={saved ? Color.GREEN : Color.RED}/>
+            <Icon glyph={saved ? Success : Cancel} color={saved ? Color.GREEN : Color.RED} />
             <Text info>{saved ? t('saved') : t('notSaved')}</Text>
         </div>
     )
@@ -127,7 +122,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                         <Button className={'select-group-left'} onClick={() => openModal(ModalMode.OPEN)}>
                             <div className={"flex flex-row gap-x-2"}>
                                 {project.name}
-                                <img src={project.iconUrl} alt={''} className={'avatar'}/>
+                                <img src={project.iconUrl} alt={''} className={'avatar'} />
                             </div>
                         </Button>
                         {target === Target.ARTICLE ?
@@ -136,16 +131,16 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                                 label={t('selectArticle')}
                                 buttonClassName={'select-group-middle'}
                                 className={'select-group-middle'}
-                                filter={{placeholder: t("filterArticles")}}
+                                filter={{ placeholder: t("filterArticles") }}
                                 loadingMessage={t('loading')}
                                 notFoundMessage={t('noArticlesFound')}
                                 selected={nullableArticleToSelectItem(article)}
                                 loading={articlesLoading}
                                 onLoadMore={() => void fetchNextArticles()}
                                 data={articles?.filter(filterArticle).map(articleToSelectItem)}
-                                onOpen={() => onArticleFilter({project: project, onlySvgAttachments: true})}
+                                onOpen={() => onArticleFilter({ project: project, onlySvgAttachments: true })}
                                 onSelect={(item) => item && setArticleAndReset(item.model)}
-                                onFilter={(text) => onArticleFilter({project: project, search: text, onlySvgAttachments: true})}
+                                onFilter={(text) => onArticleFilter({ project: project, search: text, onlySvgAttachments: true })}
                                 renderOptimization={false}
                                 size={Size.AUTO}
 
@@ -157,7 +152,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                                 label={t('selectIssue')}
                                 buttonClassName={'select-group-middle'}
                                 className={'select-group-middle'}
-                                filter={{placeholder: t("filterIssues")}}
+                                filter={{ placeholder: t("filterIssues"), fn: matchSelectItemByLabelOrDescription }}
                                 loadingMessage={t('loading')}
                                 notFoundMessage={t('noIssuesFound')}
                                 selected={nullableIssueToSelectItem(issue)}
@@ -165,7 +160,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                                 onLoadMore={() => void fetchNextIssues()}
                                 data={issues?.filter(filterIssue).map(issueToSelectItem)}
                                 onSelect={(item) => item && setIssueAndReset(item.model)}
-                                onFilter={(text) => onIssuefilter({project: project, search: text, onlySvgAttachments: true})}
+                                onFilter={(text) => onIssuefilter({ project: project, search: text, onlySvgAttachments: true })}
                                 renderOptimization={false}
                                 size={Size.AUTO}
 
@@ -177,7 +172,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                             label={t('selectAttachment')}
                             buttonClassName={'select-group-right'}
                             className={'select-group-right'}
-                            filter={{placeholder: t("filterAttachments")}}
+                            filter={{ placeholder: t("filterAttachments") }}
                             loadingMessage={t('loading')}
                             notFoundMessage={t('noAttachmentsFound')}
                             selected={nullableAttachmentToSelectItem(attachment)}
@@ -199,18 +194,18 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                     setShowSelectPath(true)
                     if (autoSave) triggerExportEvent()
                 })}>
-                    <Icon glyph={Add}/>
+                    <Icon glyph={Add} />
                 </Button>
             </div>
             {isSomethingSelected &&
                 <div className={"flex flex-row gap-x-2"}>
-                    <SavedIndicator saved={isSaved}/>
+                    <SavedIndicator saved={isSaved} />
                     <Button primary onClick={() => triggerExportEvent()}>
                         {t('save')}
                     </Button>
 
                     <Button className={'iconButton'} title={getOpenBtnTitle(target)} onClick={onLeavePage}>
-                        <Icon glyph={NewWindow}/>
+                        <Icon glyph={NewWindow} />
                     </Button>
                 </div>
             }
