@@ -5,6 +5,7 @@ export interface Project extends BaseEntity {
     name: string
     iconUrl: string
     archived?: boolean
+    shortName: string
 }
 
 /*export interface AttachmentWrapper extends BaseEntity {

@@ -4,7 +4,7 @@ import {host} from "../../global/youTrackApp.ts";
 
 export const ATTACHMENT_FIELDS = "id,name,extension,mimeType,size,created,thumbnailURL"
 export const ATTACHMENT_CONTENT_FIELDS = "id,name,extension,base64Content,mimeType,size"
-export const PROJECT_FIELDS = "id,name,iconUrl,archived"
+export const PROJECT_FIELDS = "id,name,iconUrl,archived,shortName"
 export const ISSUE_FIELDS = `id,summary,idReadable,project(${PROJECT_FIELDS}),attachments(${ATTACHMENT_FIELDS})`
 export const ARTICLE_FIELDS = `id,summary,idReadable,project(${PROJECT_FIELDS}),attachments(${ATTACHMENT_FIELDS})`
 export const SVG_QUERY = 'attachments:*.svg'

@@ -25,6 +25,7 @@ import Cancel from "@jetbrains/icons/cancel"
 import NewWindow from "@jetbrains/icons/new-window"
 import Text from "@jetbrains/ring-ui-built/components/text/text";
 import {filterArticle, filterAttachment, filterIssue} from "../util/filter.ts";
+import {Project} from "../entities/youtrack.ts";
 
 export default function SelectionBar({autoSave}: { autoSave: boolean }) {
 
@@ -50,6 +51,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
     const {articles, articlesLoading, fetchNextArticles, onFilterChange: onArticleFilter} = useArticles(false)
     const {openModal} = useModalContext()
     const [showSelectPath, setShowSelectPath] = useState(false)
+    const iconUrl= (p: Project) => `/api/iconGenerator/icon?key=${p.shortName}&name=${p.name}`
 
     const attachments = useMemo(() => {
         if (target === Target.ARTICLE) {
@@ -119,6 +121,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
         window.open(href, '_blank')
     }, [target, issue, article])
 
+    console.log(project)
     return (
         <div className={"flex flex-row justify-between py-3"}>
             <div className={"flex flex-row gap-x-2"}>
@@ -127,7 +130,7 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
                         <Button className={'select-group-left'} onClick={() => openModal(ModalMode.OPEN)}>
                             <div className={"flex flex-row gap-x-2"}>
                                 {project.name}
-                                <img src={project.iconUrl} alt={''} className={'avatar'}/>
+                                <img src={iconUrl(project)} alt={''} className={'avatar'}/>
                             </div>
                         </Button>
                         {target === Target.ARTICLE ?
