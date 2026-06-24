@@ -121,7 +121,6 @@ export default function SelectionBar({autoSave}: { autoSave: boolean }) {
         window.open(href, '_blank')
     }, [target, issue, article])
 
-    console.log(project)
     return (
         <div className={"flex flex-row justify-between py-3"}>
             <div className={"flex flex-row gap-x-2"}>
