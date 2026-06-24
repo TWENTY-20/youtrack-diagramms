@@ -10,8 +10,8 @@
     "upload": "youtrack-workflow upload build"
   },
   "dependencies": {
-    "@jetbrains/icons": "^5.19.0",
-    "@jetbrains/ring-ui-built": "^7.0.98",
+    "@jetbrains/icons": "^5.23.0",
+    "@jetbrains/ring-ui-built": "^7.0.116",
     "@jetbrains/youtrack-scripting": "^0.2.1",
     "@jetbrains/youtrack-scripting-api": "^2022.1.46592",
     "@vitejs/plugin-react": "^6.0.3",
@@ -34,7 +34,7 @@
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.62.0",
     "@typescript-eslint/parser": "^8.62.0",
-    "eslint": "^10.5.0",
+    "eslint": "^9.39.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.4.26",
