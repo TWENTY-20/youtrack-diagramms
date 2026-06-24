@@ -60,10 +60,5 @@ export default defineConfig(({mode}) => {
                 }
             }
         },
-        esbuild: {
-            supported: {
-                "top-level-await": true
-            }
-        },
     };
 });

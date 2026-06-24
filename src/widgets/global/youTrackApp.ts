@@ -1,6 +1,6 @@
-import { Host } from "../full-page/entities/types.ts";
+import {Host} from "../full-page/entities/types.ts";
 
-declare const YTApp: {
+type YouTrackApp = {
     locale: string,
     register: () => Promise<Host>,
     entity: {
@@ -15,6 +15,10 @@ declare const YTApp: {
     }
 };
 
-export const host = await YTApp.register();
+declare const YTApp: YouTrackApp;
 
-export default YTApp;
+const youTrackApp = YTApp;
+
+export const host = await youTrackApp.register();
+
+export default youTrackApp;
