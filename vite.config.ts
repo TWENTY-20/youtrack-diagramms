@@ -9,19 +9,16 @@ export default defineConfig(({mode}) => {
     if (mode === "backend") {
         return {
             build: {
+                outDir: "build",
+                rolldownOptions: {
+                    external: [/^@jetbrains\/youtrack-scripting-api/],
+                },
                 lib: {
                     entry: "./src/backend.js",
                     formats: ["cjs"],
-                    emptyOutDir: true,
-                    name: "backend",
-                    fileName: "backend.js"
+                    fileName: (_format, entryName) => `${entryName}.js`,
                 },
-                rollupOptions: {
-                    output: {
-                        entryFileNames: "backend.js",
-                        dir: "build"
-                    }
-                }
+                emptyOutDir: true,
             }
         };
     }
@@ -34,10 +31,10 @@ export default defineConfig(({mode}) => {
             tailwindcss(),
             viteStaticCopy({
                 targets: [
-                    { src: "./logo.svg", dest: "." },
-                    { src: "./manifest.json", dest: "." },
-                    { src: "./entity-extensions.json", dest: "." },
-                    { src: "./settings.json", dest: "." },
+                    {src: "./logo.svg", dest: "."},
+                    {src: "./manifest.json", dest: "."},
+                    {src: "./entity-extensions.json", dest: "."},
+                    {src: "./settings.json", dest: "."},
                 ]
             })
         ],
