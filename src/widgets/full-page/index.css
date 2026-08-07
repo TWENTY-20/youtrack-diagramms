@@ -4,11 +4,12 @@
     --window-height: 1080px;
 }
 
-body.plugin {
+.app {
     padding-left: 16px;
     background-color: var(--ring-content-background-color);
     color: var(--ring-text-color);
     font-size: var(--ring-font-size);
+    height: var(--window-height);
 }
 
 .breadCrumbLink:hover {
@@ -29,11 +30,6 @@ body.plugin {
 
 .confirmation-popup {
     max-height: 200px !important;
-}
-
-
-.drawIo {
-    height: calc(var(--window-height) - 290px);
 }
 
 
